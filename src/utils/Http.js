@@ -6,14 +6,8 @@ import {isEmptyObj} from "utils";
 class Http {
 
 	constructor() {
-		this.localHost = 'http://localhost:8101';
-		this.remoteHost = '';
-		this.mode = "local";
-		this.baseURL = this.mode === 'local' ? this.localHost : this.remoteHost;
-		this.http = axios.create({
-		  baseURL: this.baseURL,
-		});
-
+		
+		this.setEnv()
 		// axios的配置选项详情
 		// {
 		//   // `url` 是用于请求的服务器 URL
@@ -142,6 +136,23 @@ class Http {
 		// }
 	}
 
+
+	setEnv(mode = 'dev') {
+		this.devHost = 'http://localhost:8101';
+		this.prodHost = 'http://192.168.1.121:8101'
+		this.mode = mode;
+		switch( this.mode ) {
+			case 'dev':
+				this.baseURL = this.devHost
+				break;
+			case 'prod':
+				this.baseURL = this.prodHost
+				break;
+		}
+		this.http = axios.create({
+		  baseURL: this.baseURL,
+		});
+	}	
 
 	requestAsync(ops) {
 		var self = this

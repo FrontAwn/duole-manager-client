@@ -26,8 +26,9 @@
 	import Http from "@/utils/Http"
 	import ECharts from 'vue-echarts/components/ECharts'
 	import 'echarts'
-	// import 'echarts/lib/component/polar'
-
+	if(window.location.hostname === '192.168.1.121') {
+		Http.setEnv('prod')
+	}
 	export default vuec({
 		name:'DailyReportCurrentStockList',
 		data:{
