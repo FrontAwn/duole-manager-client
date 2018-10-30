@@ -6,7 +6,7 @@ import {isEmptyObj} from "utils";
 class Http {
 
 	constructor() {
-		this.localHost = 'http://localhost:8001';
+		this.localHost = 'http://localhost:8101';
 		this.remoteHost = '';
 		this.mode = "local";
 		this.baseURL = this.mode === 'local' ? this.localHost : this.remoteHost;
