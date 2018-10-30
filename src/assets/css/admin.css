@@ -1,0 +1,79 @@
+@custom-media --large (min-width: 1500px);
+@custom-media --notebook (min-width: 1025px) and (max-width: 1280px);
+@custom-media --ipad (min-width: 769px) and (max-width: 1024px);
+@custom-media --phone (max-width: 768px);
+
+.admin-component-flex-box {
+	width: 100%;
+	display: flex;
+}
+
+.admin-component-flex-between-box {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+.admin-component-warp-flex-box {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.admin-component-inner-box {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.admin-component-ourter-content-box {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.admin-component-outer-content-left-box {
+	width: 70%;
+	border-right:1px dashed #e9eaec;
+}
+
+.admin-component-outer-content-left-not-border-box {
+	width: 70%;
+}
+
+
+.admin-component-outer-content-right-box {
+	width: 30%;
+	display: flex;
+	flex-direction:column;
+	align-items: center;
+	justify-content: center;
+}
+
+.admin-iview-core-card {
+	width: 850px;
+	/*width:800px ?if media (--ipad);*/
+	width:1200px ?if media (--large);
+	max-width: 90%;
+	margin-top:30px;
+}
+
+.addmin-iview-core-card-inner-content {
+	width: 48%;
+	width: 100% ?if media (--phone); 
+}
+
+.admin-iview-core-card-three-content {
+	width: 30%;
+	width: 100% ?if media (--phone); 
+}
+
+.admin-component-margin-bottom {
+	margin-bottom: 10px;
+}
+
+.admin-component-title-font {
+	color: #1c2438;
+	font-weight: bold;
+}
