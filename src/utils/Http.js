@@ -6,8 +6,14 @@ import {isEmptyObj} from "utils";
 class Http {
 
 	constructor() {
-		
-		this.setEnv()
+
+		switch( window.location.hostname  ) {
+			case '192.168.1.121':
+				this.setEnv('prod')
+				break;
+			case 'localhost':
+				this.setEnv('dev')
+		}
 		// axios的配置选项详情
 		// {
 		//   // `url` 是用于请求的服务器 URL

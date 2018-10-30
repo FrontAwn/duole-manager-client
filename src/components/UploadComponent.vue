@@ -40,8 +40,6 @@
 		data:{
 			fileInputDOM:null,
 			fromDOM:null,
-			baseUrl:'http://localhost:7001',
-
 		},
 		mounted() {
 			this.fileInputDOM = document.getElementById('upload-excel-file-input')
