@@ -157,7 +157,7 @@
 					// 库存周平均值
 					let stockAve = parseInt(stockSum/count)
 					// 周毛利率
-					let maoriRate = (maoriSum/retailPriceAmount).toFixed(5)
+					let maoriRate = (maoriSum/retailPriceAmount).toFixed(2)
 					// 周零售销售价平均值
 					let retailPriceAve = retailPriceSum/count
 					// 周加权成本平均值
@@ -165,12 +165,12 @@
 
 					res[buildIdx]['库存量'] = stockAve
 					res[buildIdx]['周销量'] = retailSum
-					res[buildIdx]['周毛利率'] = (maoriRate*100).toFixed(4)
-					res[buildIdx]['平均售价'] = retailPriceAve.toFixed(4)
-					res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(4)
-					res[buildIdx]['效率值'] = ((retailSum/stockAve)*maoriRate/0.0125*100).toFixed(4)
-					res[buildIdx]['折扣'] = ((retailPriceAve/brand_price).toFixed(4))*10
-					res[buildIdx]['周成本'] = costJiaquanAve.toFixed(4)
+					res[buildIdx]['周毛利率'] = (maoriRate*100).toFixed(2)
+					res[buildIdx]['平均售价'] = retailPriceAve.toFixed(2)
+					res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(2)
+					res[buildIdx]['效率值'] = ((retailSum/stockAve)*maoriRate/0.0125*100).toFixed(2)
+					res[buildIdx]['折扣'] = ((retailPriceAve/brand_price).toFixed(2))*10
+					res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
 
 				}
 				// var reverseData = []
@@ -214,11 +214,11 @@
 							computedResult[i] = sum
 							break;
 						default :
-							computedResult[i] = (sum/datas.length).toFixed(4)
+							computedResult[i] = (sum/datas.length).toFixed(2)
 							break;
 					}
 				}
-				computedResult['库销比'] = (computedResult['库存量'] / computedResult['周销量']).toFixed(4)
+				computedResult['库销比'] = (computedResult['库存量'] / computedResult['周销量']).toFixed(2)
 				this.totalDatas = computedResult
 			},
 
@@ -262,8 +262,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.amountDatas['库存量']
@@ -313,8 +313,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.amountDatas['周销量']
@@ -364,8 +364,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.amountDatas['平均售价']
@@ -415,8 +415,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.amountDatas['周成本']
@@ -472,8 +472,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.rateDatas['周毛利率']
@@ -523,8 +523,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.rateDatas['库销比']
@@ -574,8 +574,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.rateDatas['效率值']
@@ -624,8 +624,8 @@
 				            label: {
 				                normal: {
 				                    show: true,
-				                    position: 'top',
-				                    fontSize:10
+				                    fontSize:16,
+				                    color:'#000000'
 				                }
 				            },
 				            data:this.rateDatas['折扣']
