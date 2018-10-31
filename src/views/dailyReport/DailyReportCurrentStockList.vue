@@ -6,25 +6,36 @@
 				<div v-for="(data,opt) in datas" style="height: 40px;width: 100%;display: flex;justify-content: center;align-items: center;border-right:1px solid #dddee1;border-bottom: 1px solid #dddee1;">{{data}}</div>
 			</div>	
 		</div> -->
-		<div style="width: 100%;height: 100%;display: flex;">
-			<!-- <ECharts :options="amountLineOption" style="width: 50%;"></ECharts> -->
+		<div style="width: 100%;height: 100%;display: flex;margin-top:10px;">
 			<ECharts :options="amountLineByStockOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailPriceOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByCostOption" style="width: 50%;"></ECharts>
 		</div>
-		<!-- <div style="width: 70%;height: 100%;display: flex;justify-content: center;">
-			<div style="width:92%;background: red;display: flex;justify-content: space-between;">
-				<div v-for="(data,date) in dataResult">{{date}}</div>	
-			</div>
-		</div> -->
 		<div style="width: 100%;height: 100%;display: flex;margin-top:30px;">
 				<ECharts :options="barByMaoriRateOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByStockAndRetailRateOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByEfficiencyValuesOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByDiscountOption" style="width: 50%;"></ECharts>
 		</div>
-		<div style="height:30px;"></div>
+
+		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;justify-content: center;align-items: center;font-size:18px;font-weight: bold">
+			总计
+		</div>
+
+		<div style="width: 100%;height: 100%;display: flex;margin-top:5px;justify-content: center;align-items: center;">
+				<div v-for="(data,key) in totalDatas" style="display: flex;position:relative;">
+					<div 
+						style="width: 70px;height:50px;background:#e9eaec;display: flex;justify-content: center;align-items: center;font-size: 14px;"
+						:class="key === '折扣' ? 'key-table-border-end' : 'key-table-border'"
+					>{{key}}</div>
+					<div 
+						style="position: absolute;width: 70px;height:50px;display: flex;justify-content: center;align-items: center;top:50px;left:0;font-size: 14px;"
+						:class="key === '折扣' ? 'value-table-border-end' : 'value-table-border'"
+					>{{data}}</div>
+				</div>	
+		</div>
+		<div style="height:100px;"></div>
 	</div>
 </template>
 
@@ -38,12 +49,14 @@
 		name:'DailyReportCurrentStockList',
 		data:{
 			sku:null,
-			dataResult:[],
+			// 库存量
 			amountLineByStockOption:{},
+			// 周销量
 			amountLineByRetailOption:{},
+			// 平均售价
 			amountLineByRetailPriceOption:{},
+			// 周成本
 			amountLineByCostOption:{},
-
 			// 毛利率
 			barByMaoriRateOption:{},
 			// 库销比
@@ -67,6 +80,7 @@
 				'效率值':[],
 				'折扣':[],
 			},
+			totalDatas:{}
 		},
 		created() {
 			this.sku = this.$route.params['sku']
@@ -117,7 +131,7 @@
 					// 牌价
 					let brand_price = 0
 					// 库存总合
-					let totalSum = 0
+					let stockSum = 0
 					// 毛利总计
 					let maoriSum = 0
 					// 零售总量
@@ -132,7 +146,7 @@
 					data.forEach((v,dataIdx)=>{
 						v['cost_info'] = JSON.parse(v['cost_info']);
 						v['distribution_info'] = JSON.parse(v['distribution_info']);
-						totalSum+=v['total'];
+						stockSum+=v['total'];
 						maoriSum+=parseFloat(v['maori'])
 						brand_price = v['brand_price']
 						retailSum+=v['retail']
@@ -141,7 +155,7 @@
 						costJiaquanSum+=parseFloat(v['cost_info']['cost_jiaquan'])
 					})
 					// 库存周平均值
-					let totalAve = parseInt(totalSum/count)
+					let stockAve = parseInt(stockSum/count)
 					// 周毛利率
 					let maoriRate = (maoriSum/retailPriceAmount).toFixed(5)
 					// 周零售销售价平均值
@@ -149,22 +163,22 @@
 					// 周加权成本平均值
 					let costJiaquanAve = costJiaquanSum/count
 
-					res[buildIdx]['库存量'] = totalAve
+					res[buildIdx]['库存量'] = stockAve
 					res[buildIdx]['周销量'] = retailSum
 					res[buildIdx]['周毛利率'] = (maoriRate*100).toFixed(4)
 					res[buildIdx]['平均售价'] = retailPriceAve.toFixed(4)
-					res[buildIdx]['库销比'] = (totalAve/(retailSum*4)).toFixed(4)
-					res[buildIdx]['效率值'] = ((retailSum/totalAve)*maoriRate/0.0125*100).toFixed(4)
+					res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(4)
+					res[buildIdx]['效率值'] = ((retailSum/stockAve)*maoriRate/0.0125*100).toFixed(4)
 					res[buildIdx]['折扣'] = ((retailPriceAve/brand_price).toFixed(4))*10
 					res[buildIdx]['周成本'] = costJiaquanAve.toFixed(4)
 
 				}
-				var reverseData = []
+				// var reverseData = []
 				self.dates = Object.keys(res).reverse()
 
 				for(let i in res) {
 					let data = res[i]
-					reverseData.unshift(data)
+					// reverseData.unshift(data)
 					Object.keys(data).forEach((k,i)=>{
 						if(self.amountDatas.hasOwnProperty(k)) {
 							self.amountDatas[k].unshift(data[k])
@@ -175,12 +189,37 @@
 					})
 				}
 
+				// console.log(reverseData)
 				// 开始调用echars的图形方法
 				this.setAmountLineOption()
-				this.setBarByMaoriRateOption()
-				this.setBarByStockAndRetailRateOption()
-				this.setBarByEfficiencyValuesOption()
-				this.setBarByDiscountOption()
+				this.setRateBarOption()
+				this.computeTotalDatas()
+			},
+
+			computeTotalDatas() {
+				var amountDatas = this.amountDatas
+				var rateDatas = this.rateDatas
+				var totalDatas = {...amountDatas,...rateDatas}
+				var computedResult = {} 
+				for(let i in totalDatas) {
+					var datas = totalDatas[i]
+					var sum = datas.reduce((prev,curr)=>{
+						return parseFloat(prev)+parseFloat(curr)
+					})
+					switch(i) {
+						case '周销量':
+							computedResult[i] = sum
+							break;
+						case '库销比':
+							computedResult[i] = sum
+							break;
+						default :
+							computedResult[i] = (sum/datas.length).toFixed(4)
+							break;
+					}
+				}
+				computedResult['库销比'] = (computedResult['库存量'] / computedResult['周销量']).toFixed(4)
+				this.totalDatas = computedResult
 			},
 
 			setAmountLineOption() {
@@ -392,7 +431,7 @@
 
 			},
 
-			setBarByMaoriRateOption() {
+			setRateBarOption() {
 
 				this.barByMaoriRateOption = {
 
@@ -443,10 +482,7 @@
 				    ],
 				    "color": ["#F46565"]
 				};
-			},
 
-
-			setBarByStockAndRetailRateOption(){
 
 				this.barByStockAndRetailRateOption = {
 
@@ -499,10 +535,6 @@
 				};
 
 
-			},
-
-			setBarByEfficiencyValuesOption() {
-
 				this.barByEfficiencyValuesOption = {
 
 					title: {
@@ -552,11 +584,6 @@
 				    ],
 				    "color": ["#F46565"]
 				};
-
-
-			},
-
-			setBarByDiscountOption() {
 
 				this.barByDiscountOption = {
 
@@ -608,8 +635,10 @@
 				    "color": ["#F46565"]
 				};
 
+
 			},
 
+		
 
 		},
 
@@ -631,6 +660,40 @@
 		width: 100%;
 		top: 0;
 		left: 0;
-		/*background: #FDF5E6;*/
+	}
+
+	.key-table-border {
+		border-left:1px solid #dddee1;
+		border-top: 1px solid #dddee1;
+	}	
+
+	.key-table-border-end {
+		border-left:1px solid #dddee1;
+		border-top: 1px solid #dddee1;
+		border-right: 1px solid #dddee1;
+	}
+
+	.value-table-border {
+		border-left:1px solid #dddee1;
+		border-bottom: 1px solid #dddee1;
+		border-top: 1px solid #dddee1;
+	}
+
+	.value-table-border-end {
+		border-left:1px solid #dddee1;
+		border-bottom: 1px solid #dddee1;
+		border-top: 1px solid #dddee1;
+		border-right: 1px solid #dddee1;
 	}
 </style>
+
+
+
+
+
+
+
+
+
+
+
