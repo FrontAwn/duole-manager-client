@@ -6,7 +6,8 @@
 				<div v-for="(data,opt) in datas" style="height: 40px;width: 100%;display: flex;justify-content: center;align-items: center;border-right:1px solid #dddee1;border-bottom: 1px solid #dddee1;">{{data}}</div>
 			</div>	
 		</div> -->
-		<div style="width: 100%;height: 100%;display: flex;margin-top:10px;">
+		<div style="display: flex;justify-content: center;font-size: 16px;font-weight: bold;border-bottom: 1px solid #dddee1;">日报数据截止日期：{{lastDate}}</div>
+		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;">
 			<ECharts :options="amountLineByStockOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailPriceOption" style="width: 50%;"></ECharts>
@@ -80,7 +81,8 @@
 				'效率值':[],
 				'折扣':[],
 			},
-			totalDatas:{}
+			totalDatas:{},
+			lastDate:'',
 		},
 		created() {
 			this.sku = this.$route.params['sku']
@@ -98,6 +100,8 @@
 						}
 					})
 					// self.checkDataExists(res.data)
+					self.lastDate = res.data['lastDate']
+					delete res.data['lastDate'];
 					self.buildDataResult(res.data)
 					// console.log('res',res.data)
 				} catch(e) {
