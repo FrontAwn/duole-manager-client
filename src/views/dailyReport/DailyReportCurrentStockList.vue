@@ -7,12 +7,18 @@
 			</div>	
 		</div> -->
 		<div style="width: 100%;height: 100%;display: flex;">
-			<div style="width: 70%">
-				<ECharts :options="amountLineOption" style="width: 100%;"></ECharts>
-			</div>
+			<!-- <ECharts :options="amountLineOption" style="width: 50%;"></ECharts> -->
+			<ECharts :options="amountLineByStockOption" style="width: 50%;"></ECharts>
+			<ECharts :options="amountLineByRetailOption" style="width: 50%;"></ECharts>
+			<ECharts :options="amountLineByRetailPriceOption" style="width: 50%;"></ECharts>
+			<ECharts :options="amountLineByCostOption" style="width: 50%;"></ECharts>
 		</div>
-		<div style="height:30px;"></div>
-		<div style="width: 100%;height: 100%;display: flex;">
+		<!-- <div style="width: 70%;height: 100%;display: flex;justify-content: center;">
+			<div style="width:92%;background: red;display: flex;justify-content: space-between;">
+				<div v-for="(data,date) in dataResult">{{date}}</div>	
+			</div>
+		</div> -->
+		<div style="width: 100%;height: 100%;display: flex;margin-top:30px;">
 				<ECharts :options="barByMaoriRateOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByStockAndRetailRateOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByEfficiencyValuesOption" style="width: 50%;"></ECharts>
@@ -32,7 +38,12 @@
 		name:'DailyReportCurrentStockList',
 		data:{
 			sku:null,
-			amountLineOption:{},
+			dataResult:[],
+			amountLineByStockOption:{},
+			amountLineByRetailOption:{},
+			amountLineByRetailPriceOption:{},
+			amountLineByCostOption:{},
+
 			// 毛利率
 			barByMaoriRateOption:{},
 			// 库销比
@@ -72,7 +83,7 @@
 							sku,
 						}
 					})
-					self.checkDataExists(res.data)
+					// self.checkDataExists(res.data)
 					self.buildDataResult(res.data)
 					// console.log('res',res.data)
 				} catch(e) {
@@ -81,26 +92,28 @@
 				}
 			},
 
-			checkDataExists(datas) {
-				var dataValues = Object.values(datas)
-				// console.log('@@@',dataValues)
-				var result = []
-				dataValues.forEach((data,i)=>{
-					result.concat(data)
-				})
-				console.log('@@@@@',result)
-			},
+			// checkDataExists(datas) {
+			// 	var dataValues = Object.values(datas)
+			// 	// console.log('@@@',dataValues)
+			// 	var result = []
+			// 	dataValues.forEach((data,i)=>{
+			// 		result.concat(data)
+			// 	})
+			// 	console.log('@@@@@',result)
+			// },
 
 			buildDataResult(datas) {
 				var self = this
-				var titles = Object.keys(datas);
 				let res = {}
-				res[this.sku] = ['库存量','周销量','周毛利率','平均售价','库销比','效率值','折扣','周成本']
+				// console.log('原始数据',datas)
 				for (let weekIdx in datas) {
 					let data = datas[weekIdx]
 					let count = data.length
 					let buildIdx = `近${weekIdx[0]}周`;
 					res[buildIdx] = {}
+					if(count === 0) {
+						continue
+					}
 					// 牌价
 					let brand_price = 0
 					// 库存总合
@@ -146,12 +159,12 @@
 					res[buildIdx]['周成本'] = costJiaquanAve.toFixed(4)
 
 				}
-				var titles = res[self.sku]
-				delete res[self.sku]
-				var dates = Object.keys(res)
-				self.dates = dates.reverse()
+				var reverseData = []
+				self.dates = Object.keys(res).reverse()
+
 				for(let i in res) {
 					let data = res[i]
+					reverseData.unshift(data)
 					Object.keys(data).forEach((k,i)=>{
 						if(self.amountDatas.hasOwnProperty(k)) {
 							self.amountDatas[k].unshift(data[k])
@@ -161,6 +174,7 @@
 						}
 					})
 				}
+
 				// 开始调用echars的图形方法
 				this.setAmountLineOption()
 				this.setBarByMaoriRateOption()
@@ -170,75 +184,211 @@
 			},
 
 			setAmountLineOption() {
-				var self = this
-				this.amountLineOption = {
-				    title: {
-				        text: `货号:${self.sku}`
+				this.amountLineByStockOption = {
+
+					title: {
+				        text: '库存量'
 				    },
-				    tooltip: {
-				        trigger: 'axis'
+
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            
+				            type : 'shadow'        
+				        }
 				    },
-				    legend: {
-				        data:self.amountTitles
-				    },
+				    
 				    grid: {
 				        left: '3%',
 				        right: '4%',
 				        bottom: '3%',
 				        containLabel: true
 				    },
-				    
-				    xAxis: {
-				        type: 'category',
-				        boundaryGap: false,
-				        data: self.dates
-				    },
-
-				    yAxis: {
-				        type: 'value'
-				    },
-
-				    series: [
+				    xAxis : [
 				        {
-				            name:'库存量',
-				            type:'line',
-				            smooth: true,
-				            areaStyle: {
-				            	opacity:0.3
-				            },
-				            data:self.amountDatas['库存量']
-				        },
+				            type : 'category',
+				            data : this.dates
+				        }
+				    ],
+				    yAxis : [
 				        {
-				            name:'周销量',
-				            type:'line',
-				            smooth: true,
-				            areaStyle: {
-				            	opacity:0.7
-				            },
-				            data:self.amountDatas['周销量']
-				        },
-				        {
-				            name:'平均售价',
-				            type:'line',
-				            smooth: true,
-				            areaStyle: {
-				            	opacity:0.1
-				            },
-				            data:self.amountDatas['平均售价']
-				        },
-				        {
-				            name:'周成本',
-				            type:'line',
-				            smooth: true,
-				            areaStyle: {
-				            	opacity:0.1
-				            },
-				            data:self.amountDatas['周成本']
-				        },
+				            type : 'value'
+				        }
 				    ],
 
-				    "color": ["#00C3B6", "#F46565", "#6FA6CD", "#414A52"]
+				    series : [
+				        {
+				            name:'库存量',
+				            type:'bar',
+				            // barWidth : 30,
+				            label: {
+				                normal: {
+				                    show: true,
+				                    position: 'top',
+				                    fontSize:10
+				                }
+				            },
+				            data:this.amountDatas['库存量']
+				        },
+
+				    ],
+				    "color": ["#F46565"]
 				};
+
+
+				this.amountLineByRetailOption = {
+
+					title: {
+				        text: '周销量'
+				    },
+
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            
+				            type : 'shadow'        
+				        }
+				    },
+				    
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            data : this.dates
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value'
+				        }
+				    ],
+
+				    series : [
+				        {
+				            name:'周销量',
+				            type:'bar',
+				            // barWidth : 30,
+				            label: {
+				                normal: {
+				                    show: true,
+				                    position: 'top',
+				                    fontSize:10
+				                }
+				            },
+				            data:this.amountDatas['周销量']
+				        },
+
+				    ],
+				    "color": ["#F46565"]
+				};
+
+
+				this.amountLineByRetailPriceOption = {
+
+					title: {
+				        text: '平均售价'
+				    },
+
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            
+				            type : 'shadow'        
+				        }
+				    },
+				    
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            data : this.dates
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value'
+				        }
+				    ],
+
+				    series : [
+				        {
+				            name:'平均售价',
+				            type:'bar',
+				            // barWidth : 30,
+				            label: {
+				                normal: {
+				                    show: true,
+				                    position: 'top',
+				                    fontSize:10
+				                }
+				            },
+				            data:this.amountDatas['平均售价']
+				        },
+
+				    ],
+				    "color": ["#F46565"]
+				};
+
+
+				this.amountLineByCostOption = {
+
+					title: {
+				        text: '周成本'
+				    },
+
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            
+				            type : 'shadow'        
+				        }
+				    },
+				    
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            data : this.dates
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value'
+				        }
+				    ],
+
+				    series : [
+				        {
+				            name:'周成本',
+				            type:'bar',
+				            // barWidth : 30,
+				            label: {
+				                normal: {
+				                    show: true,
+				                    position: 'top',
+				                    fontSize:10
+				                }
+				            },
+				            data:this.amountDatas['周成本']
+				        },
+
+				    ],
+				    "color": ["#F46565"]
+				};
+
+
+									
 
 			},
 
@@ -252,8 +402,8 @@
 
 				    tooltip : {
 				        trigger: 'axis',
-				        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-				            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        axisPointer : {            
+				            type : 'shadow'        
 				        }
 				    },
 				    

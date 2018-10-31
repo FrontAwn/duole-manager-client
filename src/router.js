@@ -30,23 +30,6 @@ const routes = [
 		component:DailyReportCurrentStockList
 	}
 
-	// {
-	// 	path: '/admin',
-	// 	name: 'Admin',
-	// 	component:Admin,
-	// 	children: [
-	// 		{path:'word/store',name:"WordStoreComponent",component:WordStoreComponent},
-	// 		{path:'sentence/store',name:"SentenceStoreComponent",component:SentenceStoreComponent},
-	// 		{path:'article/store',name:"ArticleStoreComponent",component:ArticleStoreComponent},
-	// 		{path:'grammar/store',name:"GrammarStoreComponent",component:GrammarStoreComponent},
-	// 		{path:'course/store',name:"CourseStoreComponent",component:CourseStoreComponent},
-	// 		{path:'course/question/store',name:"CourseQuestionStoreComponent",component:CourseQuestionStoreComponent},
-	// 		{path:'test/course',name:"TestCourseComponent",component:TestCourseComponent},
-	// 		{path:'test/english/word',name:"TestEnglishWordComponent",component:TestEnglishWordComponent},
-	// 		{path:'test/question',name:"TestCourseQuestionComponent",component:TestCourseQuestionComponent}
-	// 	]
-	// }
-
 ]
 
 const router = new Router({
