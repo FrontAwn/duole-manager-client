@@ -1,30 +1,25 @@
 <template>
 	<div id="DailyReportCurrentStockList">
-		<!-- <div style="width: 100%;display: flex;">
-			<div v-for="(datas,title) in result" style="width: 20%;">
-				<div style="height: 40px;width: 100%;display: flex;justify-content: center;align-items: center;border:1px solid #dddee1;background: #e9eaec;">{{title}}</div>
-				<div v-for="(data,opt) in datas" style="height: 40px;width: 100%;display: flex;justify-content: center;align-items: center;border-right:1px solid #dddee1;border-bottom: 1px solid #dddee1;">{{data}}</div>
-			</div>	
-		</div> -->
+
 		<div style="display: flex;justify-content: center;font-size: 16px;font-weight: bold;border-bottom: 1px solid #dddee1;">日报数据截止日期：{{lastDate}}</div>
-		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;">
+		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;" v-if="state">
 			<ECharts :options="amountLineByStockOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailPriceOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByCostOption" style="width: 50%;"></ECharts>
 		</div>
-		<div style="width: 100%;height: 100%;display: flex;margin-top:30px;">
+		<div style="width: 100%;height: 100%;display: flex;margin-top:30px;" v-if="state">
 				<ECharts :options="barByMaoriRateOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByStockAndRetailRateOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByEfficiencyValuesOption" style="width: 50%;"></ECharts>
 				<ECharts :options="barByDiscountOption" style="width: 50%;"></ECharts>
 		</div>
 
-		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;justify-content: center;align-items: center;font-size:18px;font-weight: bold">
+		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;justify-content: center;align-items: center;font-size:18px;font-weight: bold" v-if="state">
 			总计
 		</div>
 
-		<div style="width: 100%;height: 100%;display: flex;margin-top:5px;justify-content: center;align-items: center;">
+		<div style="width: 100%;height: 100%;display: flex;margin-top:5px;justify-content: center;align-items: center;" v-if="state">
 				<div v-for="(data,key) in totalDatas" style="display: flex;position:relative;">
 					<div 
 						style="width: 70px;height:50px;background:#e9eaec;display: flex;justify-content: center;align-items: center;font-size: 14px;"
@@ -49,6 +44,7 @@
 	export default vuec({
 		name:'DailyReportCurrentStockList',
 		data:{
+			state:true,
 			sku:null,
 			// 库存量
 			amountLineByStockOption:{},
@@ -99,26 +95,37 @@
 							sku,
 						}
 					})
-					// self.checkDataExists(res.data)
 					self.lastDate = res.data['lastDate']
 					delete res.data['lastDate'];
+					
+					if( !self.checkDataExists(res.data) ) {
+						alert('当前货号没有日报数据!')
+						this.state = false
+						return;
+					}
+					this.state = true
 					self.buildDataResult(res.data)
 					// console.log('res',res.data)
 				} catch(e) {
-					// console.log(e)
 					throw new Error(e)
 				}
 			},
 
-			// checkDataExists(datas) {
-			// 	var dataValues = Object.values(datas)
-			// 	// console.log('@@@',dataValues)
-			// 	var result = []
-			// 	dataValues.forEach((data,i)=>{
-			// 		result.concat(data)
-			// 	})
-			// 	console.log('@@@@@',result)
-			// },
+			checkDataExists(datas) {
+				var dataValues = Object.values(datas)
+				var result = []
+				for(let i in dataValues) {
+					result.push(dataValues[i].length)
+				}
+				var dataTotal = result.reduce((prev,curr)=>{
+					return prev + curr
+				})
+				if( dataTotal === 0 ) {
+					return false
+				} else {
+					return true
+				}
+			},
 
 			buildDataResult(datas) {
 				var self = this
@@ -154,14 +161,23 @@
 						maoriSum+=parseFloat(v['maori'])
 						brand_price = v['brand_price']
 						retailSum+=v['retail']
-						retailPriceSum+=parseFloat(v['retail_price'])/v['retail']
+						if (parseFloat(v['retail_price']) === 0 && v['retail'] == 0) {
+							retailPriceSum = 0
+						} else {
+							retailPriceSum+=parseFloat(v['retail_price'])/v['retail']
+						}
 						retailPriceAmount += parseFloat(v['retail_price']);
 						costJiaquanSum+=parseFloat(v['cost_info']['cost_jiaquan'])
 					})
 					// 库存周平均值
 					let stockAve = parseInt(stockSum/count)
 					// 周毛利率
-					let maoriRate = (maoriSum/retailPriceAmount).toFixed(2)
+					let maoriRate
+					if ( maoriSum === 0 && retailPriceAmount === 0 ) {
+						maoriRate = 0	
+					} else {
+						maoriRate = (maoriSum/retailPriceAmount).toFixed(2)
+					}
 					// 周零售销售价平均值
 					let retailPriceAve = retailPriceSum/count
 					// 周加权成本平均值
@@ -171,18 +187,21 @@
 					res[buildIdx]['周销量'] = retailSum
 					res[buildIdx]['周毛利率'] = (maoriRate*100).toFixed(2)
 					res[buildIdx]['平均售价'] = retailPriceAve.toFixed(2)
-					res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(2)
+					if( retailSum === 0 ) {
+						res[buildIdx]['库销比'] = stockAve.toFixed(2)
+					} else {
+						res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(2)
+					}
 					res[buildIdx]['效率值'] = ((retailSum/stockAve)*maoriRate/0.0125*100).toFixed(2)
 					res[buildIdx]['折扣'] = ((retailPriceAve/brand_price).toFixed(2))*10
 					res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
 
 				}
-				// var reverseData = []
+				// console.log('组装后数据',res)
 				self.dates = Object.keys(res).reverse()
 
 				for(let i in res) {
 					let data = res[i]
-					// reverseData.unshift(data)
 					Object.keys(data).forEach((k,i)=>{
 						if(self.amountDatas.hasOwnProperty(k)) {
 							self.amountDatas[k].unshift(data[k])
@@ -193,7 +212,6 @@
 					})
 				}
 
-				// console.log(reverseData)
 				// 开始调用echars的图形方法
 				this.setAmountLineOption()
 				this.setRateBarOption()
