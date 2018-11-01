@@ -13,6 +13,10 @@ class Http {
 				break;
 			case 'localhost':
 				this.setEnv('dev')
+				break;
+			case '127.0.0.1':
+				this.setEnv('dev')
+				break;
 		}
 		// axios的配置选项详情
 		// {
