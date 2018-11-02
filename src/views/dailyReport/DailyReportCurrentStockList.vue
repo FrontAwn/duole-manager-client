@@ -39,7 +39,8 @@
 	import { vuec } from 'vuec'
 	import Http from "@/utils/Http"
 	import ECharts from 'vue-echarts/components/ECharts'
-	import 'echarts'
+	import 'echarts/lib/chart/bar'
+	import 'echarts/lib/component/title'
 	
 	export default vuec({
 		name:'DailyReportCurrentStockList',
