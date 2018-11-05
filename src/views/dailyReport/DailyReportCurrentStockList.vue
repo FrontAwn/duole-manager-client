@@ -243,7 +243,11 @@
 							break;
 					}
 				}
-				computedResult['库销比'] = (computedResult['库存量'] / computedResult['周销量']).toFixed(2)
+				if( computedResult['周销量'] == 0 ) {
+					computedResult['库销比'] = computedResult['库存量']
+				} else {
+					computedResult['库销比'] = (computedResult['库存量'] / computedResult['周销量']).toFixed(2)
+				}
 				this.totalDatas = computedResult
 			},
 
