@@ -20,7 +20,7 @@
 			<Card class="admin-iview-core-card">
 				<div slot="title">
 					<Icon type="ios-circle-filled"></Icon>
-					表格
+					按时间
 				</div>
 
 				<div slot="extra">
@@ -49,6 +49,64 @@
 					>{{num}}</div>
 				</div>
 
+			</Card>
+		</div>
+
+
+		<div class="admin-component-inner-box" v-if="show">
+			<Card class="admin-iview-core-card">
+				<div slot="title">
+					<Icon type="ios-circle-filled"></Icon>
+					合计
+				</div>
+
+				<div slot="extra">
+					数据截止日期：{{lastDate}}
+				</div>
+
+
+				<div class="total-table-ver-box">
+					<div style="display: flex;">
+						<div 
+						v-for="key in Object.keys(datas.totalDatas)"
+							style="width:100%;display: flex;justify-content: center;align-items:center;background: #e9eaec;height: 35px;"
+							:class="key==='折扣'?'title-table-border-end':'title-table-border'"
+						>
+							{{key}}
+						</div>
+					</div>
+					
+
+					<div style="display: flex;">
+						<div 
+							v-for="(val,idx) in Object.values(datas.totalDatas)"
+							style="width:100%;display: flex;justify-content: center;align-items:center;height: 35px;" 
+							:class="idx===Object.values(datas.totalDatas).length-1?'content-table-border-end':'content-table-border'"
+						>
+							{{val}}
+						</div>
+					</div>
+				</div>
+
+
+				<div class="total-table-hor-box">
+					<div 
+						v-for="(data,key) in datas.totalDatas"
+						style="display: flex;width: 100%;" 
+					>
+						<div 
+							style="width: 50%;height: 35px;display: flex;justify-content: center;align-items:center;background:#e9eaec"
+							:class="key==='折扣'?'total-table-hor-table-title-border-end':'total-table-hor-table-title-border'"
+						>{{key}}</div>
+
+						<div 
+							style="width: 50%;height: 35px;display: flex;justify-content: center;align-items:center"
+							:class="key==='折扣'?'total-table-hor-table-content-border-end':'total-table-hor-table-content-border'"
+						>{{data}}</div>
+					</div>
+				</div>
+
+					
 			</Card>
 		</div>
 
@@ -597,6 +655,8 @@
 	@custom-media --notebook (min-width: 1025px) and (max-width: 1280px);
 	@custom-media --ipad (min-width: 769px) and (max-width: 1024px);
 	@custom-media --phone (max-width: 768px);
+	@custom-media --small (max-width: 580px);
+
 
 	.title-table-style {
 		width: 20%;height: 35px;
@@ -615,6 +675,7 @@
 		border-left:1px solid #dddee1;
 		border-top: 1px solid #dddee1;
 		border-right: 1px solid #dddee1;
+		border-bottom: 1px solid #dddee1;
 	}
 
 	.content-table-style {
@@ -637,7 +698,43 @@
 	.echarts-image-container {
 		width: 50%;
 		width:100% ?if media (--phone);
+	}
 
+
+	.total-table-ver-box{
+		width: 100%;
+		display: none ?if media (--small);
+
+	}
+
+	.total-table-hor-box {
+		display: none;
+		width: 100%;
+		display: block ?if media (--small);
+	}
+
+	.total-table-hor-table-title-border {
+		border-top: 1px solid #dddee1;
+		border-left: 1px solid #dddee1;
+		border-right: 1px solid #dddee1;
+	}
+
+	.total-table-hor-table-title-border-end {
+		border-top: 1px solid #dddee1;
+		border-left: 1px solid #dddee1;
+		border-right: 1px solid #dddee1;
+		border-bottom: 1px solid #dddee1;
+	}
+
+	.total-table-hor-table-content-border {
+		border-top: 1px solid #dddee1;
+		border-right: 1px solid #dddee1;
+	}
+
+	.total-table-hor-table-content-border-end {
+		border-top: 1px solid #dddee1;
+		border-right: 1px solid #dddee1;
+		border-bottom: 1px solid #dddee1;
 	}
 
 </style>
