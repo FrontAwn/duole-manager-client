@@ -5,14 +5,12 @@ export default {
 		datas:{
 
 			menuList:{
-				'上传':[
+				'日报':[
 					{name:"DailyReportCurrentStockUpload",label:"日报现货表上传",icon:"social-buffer"},
-				],
-
-				'查询':[
-					{name:"DailyReportCurrentStockSearch",label:"日报现货表查询",icon:"social-buffer"}
+					{name:"DailyReportCurrentStockSearch",label:"日报现货表查询",icon:"social-buffer"},
 				],
 			},
+
 		},
 
 		values:{
@@ -26,11 +24,12 @@ export default {
 	},
 
 	actions: {
-		initRouterPage({rootState,state}) {
+		initRouterPage({rootState,dispatch,state}) {
 			if( rootState['$uri'] === '/' ) {
 				rootState.$router.push({name:state.values.initComponent});
 			} else {
-				rootState.$router.push({path:rootState['$uri']});
+				var name = state['$self'].$route.name
+				dispatch('spikRouterPage',name)
 			}
 		},
 

@@ -52,8 +52,7 @@
 }
 
 .admin-iview-core-card {
-	width: 850px;
-	/*width:800px ?if media (--ipad);*/
+	width: 900px;
 	width:1200px ?if media (--large);
 	max-width: 90%;
 	margin-top:30px;

@@ -94,8 +94,8 @@
 	#content{
 		width: 100%;
 		max-height:100%;
-		background: #FBFBFB;
-		/*background: #FFFFFF;*/
+		/*background: #FBFBFB;*/
+		background: #FFFFFF;
 	}
 
 	#content-header {
