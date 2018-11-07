@@ -1,5 +1,5 @@
 <template>
-	<div id="LeftMenuComponent">
+	<div id="ClientLeftMenu">
 	 	<Menu  
 		 	:active-name="values.selectComponent" 
 		 	style="min-height: 100%;" 
@@ -25,13 +25,13 @@
 </template>
 <script>
 	import {vuec} from "vuec";
-	import LeftMenuComponentModule from "@/vuex/modules/components/LeftMenuComponent"
+	import ClientLeftMenuModule from "@/vuex/modules/client/ClientLeftMenu"
 	export default vuec({
-		name:"LeftMenuComponent",
-		namespace:"Components/LeftMenuComponent",
+		name:"ClientLeftMenu",
+		namespace:"Client/ClientLeftMenu",
 		vuex:true,
 		modules:{
-			"Components/LeftMenuComponent":LeftMenuComponentModule
+			"Client/ClientLeftMenu":ClientLeftMenuModule
 		},
 		states:['datas','values','status'],
 		actions:['initRouterPage','spikRouterPage'],
@@ -45,7 +45,7 @@
 </script>
 
 <style scoped>
-	#LeftMenuComponent {
+	#ClientLeftMenu {
 		width: 100%;
 		height: 100%;
 	}

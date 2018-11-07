@@ -1,14 +1,14 @@
 <template>
-	<div id="Index">
+	<div id="Client">
 
 		<div style="width: 100%;height: 100%;overflow: hidden;display: flex;">
 			<div id="menu">
-				<LeftMenuComponent></LeftMenuComponent>
+				<ClientLeftMenu></ClientLeftMenu>
 			</div>
 
 			<div id="content">
 				<div id="content-header">
-					<HeaderComponent></HeaderComponent>
+					<ClientHeader></ClientHeader>
 				</div>
 				<div id="content-info">
 					<keep-alive :include="includedCacheComponents">
@@ -33,11 +33,11 @@
 	import iView from "iview";
 	Vue.use(iView);
 
-	import HeaderComponent from "@/components/HeaderComponent";
-	import LeftMenuComponent from "@/components/LeftMenuComponent";
+	import ClientHeader from "./client/ClientHeader";
+	import ClientLeftMenu from "./client/ClientLeftMenu";
 
 	export default vuec({
-		name:"Index",
+		name:"Client",
 		data:{
 			includedCacheComponents:[
 			],
@@ -46,8 +46,8 @@
 			console.log(this.$store)
 		},
 		components:{
-			HeaderComponent,
-			LeftMenuComponent
+			ClientHeader,
+			ClientLeftMenu
 		}
 	})
 
@@ -61,7 +61,7 @@
 	@custom-media --ipad (min-width: 769px) and (max-width: 1024px);
 	@custom-media --phone (max-width: 768px);
 
-	#Index {
+	#Client {
 		position:fixed;
 		top: 0;
 		left:0;

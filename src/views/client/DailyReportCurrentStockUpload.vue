@@ -1,5 +1,5 @@
 <template>
-	<div id="uploadExcelComponent">
+	<div id="DailyReportCurrentStockUpload">
 		<div class="admin-component-inner-box">
 			<Card class="admin-iview-core-card">
 				<div slot="title">
@@ -25,10 +25,10 @@
 
 
 				<div style="height:300px">
-					<UploadComponent 
+					<BigFileUploader 
 						@uploaded="getUploadedFilePath"
 						:acceptTypes="['xls','xlsx']"
-					></UploadComponent>
+					></BigFileUploader>
 				</div>
 			</Card>
 		</div>
@@ -37,11 +37,11 @@
 
 <script type="text/javascript">
 	import {vuec} from 'vuec'
-	import UploadComponent from "@/components/UploadComponent.vue"
+	import BigFileUploader from "@/components/upload/BigFileUploader.vue"
 	import Http from "@/utils/Http"
 	import iSwitch from 'iview/src/components/switch/index'
 	export default vuec({
-		name:'UploadExcelComponent',
+		name:'DailyReportCurrentStockUpload',
 
 		data:{
 			defaultDate:new Date,
@@ -73,8 +73,8 @@
 		},
 
 		components:{
-			UploadComponent,
-			iSwitch
+			iSwitch,
+			BigFileUploader
 		}
 	})
 </script>
@@ -85,7 +85,7 @@
 	@custom-media --ipad (min-width: 769px) and (max-width: 1024px);
 	@custom-media --phone (max-width: 768px);
 
-	#uploadExcelComponent {
+	#DailyReportCurrentStockUpload {
 		width: 100%;
 		position: relative;
 	}

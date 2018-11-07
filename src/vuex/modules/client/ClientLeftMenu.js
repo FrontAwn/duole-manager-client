@@ -6,14 +6,14 @@ export default {
 
 			menuList:{
 				'上传':[
-					{name:"UploadExcelComponent",label:"日报上传",icon:"social-buffer"},
+					{name:"DailyReportCurrentStockUpload",label:"日报现货表上传",icon:"social-buffer"},
 				],
 			},
 		},
 
 		values:{
-			initComponent:"UploadExcelComponent",
-			selectComponent:"UploadExcelComponent"
+			initComponent:"DailyReportCurrentStockUpload",
+			selectComponent:"DailyReportCurrentStockUpload"
 		},
 
 		status:{

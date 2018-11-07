@@ -1,5 +1,5 @@
 <template>
-	<div id="HeaderComponent">
+	<div id="ClientHeader">
 		<!-- <img :src="logo" id="admin-header-component-logo-box">
 		</img> -->
 		<!-- <div id="admin-header-component-logo-title">Emotion</div> -->
@@ -11,7 +11,7 @@
 	import logo from "@/assets/images/logo/duole.jpeg"
 
 	export default vuec({
-		name:"HeaderComponent",
+		name:"ClientHeader",
 		data:{
 			logo,
 		}
@@ -21,7 +21,7 @@
 
 <style scoped>
 	
-	#HeaderComponent {
+	#ClientHeader {
 		width: 100%;
 		height: 100%;
 		display: flex;

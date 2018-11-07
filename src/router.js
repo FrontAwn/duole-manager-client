@@ -3,23 +3,23 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const Index = ()=>import('@/views/index/Index');
-const UploadExcelComponent = ()=>import('@/views/index/UploadExcelComponent')
-
-//日报处理
+const Client = ()=>import('@/views/Client');
+// 日报现货表上传
+const DailyReportCurrentStockUpload = ()=>import('@/views/client/DailyReportCurrentStockUpload')
+// 日报根据sku查看现货表计算数据
 const DailyReportCurrentStockList = ()=>import('@/views/dailyReport/DailyReportCurrentStockList');
 
 const routes = [
 
 	{
 		path: '/',
-	    name: 'Index',
-	    component: Index,
+	    name: 'Client',
+	    component: Client,
 	    children:[
 	    	{
-	    		path:'upload/excel',
-	    		name:"UploadExcelComponent",
-	    		component:UploadExcelComponent
+	    		path:'dailyReport/uploadDailyReport',
+	    		name:"DailyReportCurrentStockUpload",
+	    		component:DailyReportCurrentStockUpload
 	    	},
 	    ]
 	},

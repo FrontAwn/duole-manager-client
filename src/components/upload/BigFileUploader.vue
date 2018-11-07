@@ -1,5 +1,5 @@
 <template>
-	<div id="Upload" class="upload-container-class">
+	<div id="BigFileUploader" class="upload-container-class">
 		<form id="upload-excel-from">
             <input 
             	multiple 
@@ -23,7 +23,7 @@
 	import SparkMD5 from 'spark-md5'
 	import Http from "@/utils/Http.js"
 	export default vuec({
-		name:"Upload",
+		name:"BigFileUploader",
 		props:{
 			uploadAreaText:{
 				type:String,
