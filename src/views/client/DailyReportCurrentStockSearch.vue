@@ -16,6 +16,16 @@
 			</Card>
 		</div>
 
+
+		<div 
+			class="admin-component-inner-box" 
+			v-if="!show"
+			style="margin-top: 30px;" 
+		>
+			<span style="font-size: 14px;">货号<span style="color: #F46565">"{{sku}}"</span>没有找到日报现货数据</span>
+		</div>
+
+
 		<div class="admin-component-inner-box" v-if="show">
 			<Card class="admin-iview-core-card">
 				<div slot="title">
