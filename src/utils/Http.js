@@ -11,6 +11,9 @@ class Http {
 			case '192.168.1.121':
 				this.setEnv('prod')
 				break;
+			case 'mc.tiangoutech.com':
+				this.setEnv('prod')
+				break;
 			case 'localhost':
 				this.setEnv('dev')
 				break;
@@ -149,7 +152,8 @@ class Http {
 
 	setEnv(mode = 'dev') {
 		this.devHost = 'http://localhost:8101';
-		this.prodHost = 'http://192.168.1.121:8101'
+		// this.prodHost = 'http://192.168.1.121:8101'
+		this.prodHost = 'http://ms.tiangoutech.com:8888'
 		this.mode = mode;
 		switch( this.mode ) {
 			case 'dev':
