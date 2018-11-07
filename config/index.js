@@ -15,7 +15,8 @@ for(var devName in interfaces){
   }  
 }
 
-var host = (IPAdress == '192.168.1.121') ? IPAdress : 'localhost'
+// var host = (IPAdress == '192.168.1.121') ? IPAdress : 'localhost'
+var host = '127.0.0.1';
 
 module.exports = {
   dev: {
