@@ -4,7 +4,7 @@
 			<Card class="admin-iview-core-card">
 				<div slot="title">
 					<Icon type="ios-circle-filled"></Icon>
-					日报上传
+					日报现货表上传
 				</div>
 
 				<div class="admin-component-margin-bottom admin-component-flex-between-box">

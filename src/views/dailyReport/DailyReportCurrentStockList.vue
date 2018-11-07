@@ -44,7 +44,7 @@
 	import ECharts from 'vue-echarts/components/ECharts'
 	import 'echarts/lib/chart/bar'
 	import 'echarts/lib/component/title'
-	
+
 	export default vuec({
 		name:'DailyReportCurrentStockList',
 		data:{
@@ -150,39 +150,50 @@
 					let maoriSum = 0
 					// 零售总量
 					let retailSum = 0
-					// 周零售价总额
-					let retailPriceSum = 0
-
+					// 周零售单价总计
+					let retailPriceSingleSum = 0
+					// 周零售销售额总计
 					let retailPriceAmount = 0
-					// 加权成本总额
+					// 加权成本总计
 					let costJiaquanSum = 0
 
 					data.forEach((v,dataIdx)=>{
+						// 解析成本详情数据
 						v['cost_info'] = JSON.parse(v['cost_info']);
+						// 解析分销详情数据
 						v['distribution_info'] = JSON.parse(v['distribution_info']);
+						// 计算库存总量
 						stockSum+=v['total'];
+						// 计算周毛利总计
 						maoriSum+=parseFloat(v['maori'])
+						// 提取牌价
 						brand_price = v['brand_price']
+						// 计算周零售总量
 						retailSum+=v['retail']
+						// 计算周单价总计
 						if (parseFloat(v['retail_price']) === 0 && v['retail'] == 0) {
-							retailPriceSum = 0
+							retailPriceSingleSum = 0
 						} else {
-							retailPriceSum+=parseFloat(v['retail_price'])/v['retail']
+							retailPriceSingleSum+=parseFloat(v['retail_price'])/v['retail']
 						}
+						// 计算周销售总额
 						retailPriceAmount += parseFloat(v['retail_price']);
+						// 计算加权成本总计
 						costJiaquanSum+=parseFloat(v['cost_info']['cost_jiaquan'])
 					})
-					// 库存周平均值
+
+					// 计算库存周平均值
 					let stockAve = parseInt(stockSum/count)
-					// 周毛利率
+
+					// 计算周毛利率
 					let maoriRate
 					if ( maoriSum === 0 && retailPriceAmount === 0 ) {
 						maoriRate = 0	
 					} else {
 						maoriRate = (maoriSum/retailPriceAmount).toFixed(2)
 					}
-					// 周零售销售价平均值
-					let retailPriceAve = retailPriceSum/count
+					// 周零售价平均值
+					let retailPriceAve = retailPriceSingleSum/count
 					// 周加权成本平均值
 					let costJiaquanAve = costJiaquanSum/count
 

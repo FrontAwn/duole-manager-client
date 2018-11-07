@@ -8,6 +8,8 @@ const Client = ()=>import('@/views/Client');
 const DailyReportCurrentStockUpload = ()=>import('@/views/client/DailyReportCurrentStockUpload')
 // 日报根据sku查看现货表计算数据
 const DailyReportCurrentStockList = ()=>import('@/views/dailyReport/DailyReportCurrentStockList');
+// 日报筛选页面
+const DailyReportCurrentStockSearch = ()=>import('@/views/client/DailyReportCurrentStockSearch')
 
 const routes = [
 
@@ -17,9 +19,15 @@ const routes = [
 	    component: Client,
 	    children:[
 	    	{
-	    		path:'dailyReport/uploadDailyReport',
+	    		path:'dailyReport/currentStockUpload',
 	    		name:"DailyReportCurrentStockUpload",
 	    		component:DailyReportCurrentStockUpload
+	    	},
+
+	    	{
+	    		path:'dailyReport/currentStockSearch',
+	    		name:'DailyReportCurrentStockSearch',
+	    		component:DailyReportCurrentStockSearch,
 	    	},
 	    ]
 	},

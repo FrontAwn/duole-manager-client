@@ -8,6 +8,10 @@ export default {
 				'上传':[
 					{name:"DailyReportCurrentStockUpload",label:"日报现货表上传",icon:"social-buffer"},
 				],
+
+				'查询':[
+					{name:"DailyReportCurrentStockSearch",label:"日报现货表查询",icon:"social-buffer"}
+				],
 			},
 		},
 
