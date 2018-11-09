@@ -109,7 +109,6 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			)*100
 		).toFixed(2)
 
-		// res[buildIdx]['折扣'] = (retailPriceAve/brandPrice*10).toFixed(2)
 		res[buildIdx]['折扣'] = (
 			NP.divide(retailPriceAve,brandPrice)*10
 		).toFixed(2)
@@ -137,7 +136,7 @@ const dailyReportCurrentStockComputed = (datas)=>{
 	for(let i in buildedDatas) {
 		var datas = buildedDatas[i]
 		var sum = datas.reduce((prev,curr)=>{
-			return parseFloat(prev)+parseFloat(curr)
+			return NP.plus(parseFloat(prev),parseFloat(curr))
 		})
 		switch(i) {
 			case '周销量':
@@ -150,14 +149,14 @@ const dailyReportCurrentStockComputed = (datas)=>{
 				totalDatas[i] = parseInt(sum/datas.length)
 				break;
 			default :
-				totalDatas[i] = (sum/datas.length).toFixed(2)
+				totalDatas[i] = NP.divide(sum,datas.length).toFixed(2)
 				break;
 		}
 	}
 	if( totalDatas['周销量'] == 0 ) {
-		totalDatas['库销比'] = totalDatas['库存量']
+		totalDatas['库销比'] = 'Infinity'
 	} else {
-		totalDatas['库销比'] = (totalDatas['库存量'] / totalDatas['周销量']).toFixed(2)
+		totalDatas['库销比'] = NP.divide(totalDatas['库存量'],totalDatas['周销量']).toFixed(2)
 	}
 
 	return {
