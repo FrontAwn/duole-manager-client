@@ -135,9 +135,13 @@ const dailyReportCurrentStockComputed = (datas)=>{
 	var totalDatas = {} 
 	for(let i in buildedDatas) {
 		var datas = buildedDatas[i]
-		var sum = datas.reduce((prev,curr)=>{
-			return NP.plus(parseFloat(prev),parseFloat(curr))
-		})
+		var sum = 0
+		if( datas.length > 0 ) {
+			sum = datas.reduce((prev,curr)=>{
+				return NP.plus(parseFloat(prev),parseFloat(curr))
+			})
+		}
+		
 		switch(i) {
 			case '周销量':
 				totalDatas[i] = sum
