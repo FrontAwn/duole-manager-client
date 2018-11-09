@@ -1,3 +1,4 @@
+import NP from 'number-precision'
 
 const dailyReportCurrentStockComputed = (datas)=>{
 	var res = {}
@@ -26,7 +27,7 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			continue
 		}
 		// 牌价
-		let brand_price = 0
+		let brandPrice = 0
 		// 库存总合
 		let stockSum = 0
 		// 毛利总计
@@ -46,9 +47,12 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			// 计算库存总计
 			stockSum+=v['total'];
 			// 计算周总毛利
-			maoriSum+=parseFloat(v['maori'])
+			maoriSum = NP.plus(
+				NP.strip(maoriSum),
+				NP.strip(parseFloat(v['maori']))
+			)
 			// 得到牌价
-			brand_price = v['brand_price']
+			brandPrice = v['brand_price']
 			// 计算零售总量
 			retailSum+=v['retail']
 
@@ -56,11 +60,21 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			if (parseFloat(v['retail_price']) === 0 && v['retail'] == 0) {
 				retailPriceSingleSum = 0
 			} else {
-				retailPriceSingleSum+=parseFloat(v['retail_price'])/v['retail']
+				retailPriceSingleSum = NP.plus( 
+					NP.divide(NP.strip(parseFloat(v['retail_price'])),v['retail']),
+					NP.strip(retailPriceSingleSum)
+				)
 			}
-			
-			retailPriceAmount += parseFloat(v['retail_price']);
-			costJiaquanSum+=parseFloat(v['cost_info']['cost_jiaquan'])
+			// 计算周零售销售额总计
+			retailPriceAmount = NP.plus(
+				NP.strip(parseFloat(v['retail_price'])),
+				NP.strip(retailPriceAmount)
+			)
+			// 计算加权成本周总计
+			costJiaquanSum = NP.plus(
+				NP.strip(parseFloat(v['cost_info']['cost_jiaquan'])),
+				NP.strip(costJiaquanSum)
+			)
 		})
 
 
@@ -71,24 +85,34 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		if ( maoriSum === 0 && retailPriceAmount === 0 ) {
 			maoriRate = 0	
 		} else {
-			maoriRate = (maoriSum/retailPriceAmount).toFixed(2)
+			maoriRate = NP.divide(maoriSum,retailPriceAmount)
 		}
 		// 周零售销售价平均值
-		let retailPriceAve = retailPriceSingleSum/count
+		let retailPriceAve = NP.divide(retailPriceSingleSum,count)
 		// 周加权成本平均值
-		let costJiaquanAve = costJiaquanSum/count
+		let costJiaquanAve = NP.divide(costJiaquanSum,count)
 
 		res[buildIdx]['库存量'] = stockAve
 		res[buildIdx]['周销量'] = retailSum
-		res[buildIdx]['周毛利率'] = (maoriRate*100).toFixed(2)
+		res[buildIdx]['周毛利率'] = NP.times(maoriRate,100).toFixed(2)
 		res[buildIdx]['平均售价'] = retailPriceAve.toFixed(2)
 		if( retailSum === 0 ) {
-			res[buildIdx]['库销比'] = stockAve.toFixed(2)
+			// res[buildIdx]['库销比'] = 0
+			continue;
 		} else {
-			res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(2)
+			res[buildIdx]['库销比'] = NP.strip((stockAve/(retailSum*4))).toFixed(2)
 		}
-		res[buildIdx]['效率值'] = ((retailSum/stockAve)*maoriRate/0.0125*100).toFixed(2)
-		res[buildIdx]['折扣'] = ((retailPriceAve/brand_price).toFixed(2))*10
+		res[buildIdx]['效率值'] = (
+			NP.divide(
+				NP.times(NP.strip(retailSum/stockAve),maoriRate),
+				0.0125
+			)*100
+		).toFixed(2)
+
+		// res[buildIdx]['折扣'] = (retailPriceAve/brandPrice*10).toFixed(2)
+		res[buildIdx]['折扣'] = (
+			NP.divide(retailPriceAve,brandPrice)*10
+		).toFixed(2)
 		res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
 
 	}
@@ -121,6 +145,9 @@ const dailyReportCurrentStockComputed = (datas)=>{
 				break;
 			case '库销比':
 				totalDatas[i] = sum
+				break;
+			case '库存量':
+				totalDatas[i] = parseInt(sum/datas.length)
 				break;
 			default :
 				totalDatas[i] = (sum/datas.length).toFixed(2)

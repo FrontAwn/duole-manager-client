@@ -44,6 +44,7 @@
 	import ECharts from 'vue-echarts/components/ECharts'
 	import 'echarts/lib/chart/bar'
 	import 'echarts/lib/component/title'
+	import {dailyReportCurrentStockComputed} from "@/api/DailyReport"
 
 	export default vuec({
 		name:'DailyReportCurrentStockList',
@@ -107,8 +108,13 @@
 						return;
 					}
 					this.state = true
-					self.buildDataResult(res.data)
-					// console.log('res',res.data)
+					var datas = dailyReportCurrentStockComputed(res.data)
+					self.amountDatas = datas['amountDatas']
+					self.rateDatas = datas['rateDatas']
+					self.totalDatas = datas['totalDatas']
+					self.dates = datas['titles']
+					this.setAmountLineOption()
+					this.setRateBarOption()
 				} catch(e) {
 					throw new Error(e)
 				}
@@ -128,138 +134,6 @@
 				} else {
 					return true
 				}
-			},
-
-			buildDataResult(datas) {
-				var self = this
-				let res = {}
-				// console.log('原始数据',datas)
-				for (let weekIdx in datas) {
-					let data = datas[weekIdx]
-					let count = data.length
-					let buildIdx = `近${weekIdx[0]}周`;
-					res[buildIdx] = {}
-					if(count === 0) {
-						continue
-					}
-					// 牌价
-					let brand_price = 0
-					// 库存总合
-					let stockSum = 0
-					// 毛利总计
-					let maoriSum = 0
-					// 零售总量
-					let retailSum = 0
-					// 周零售单价总计
-					let retailPriceSingleSum = 0
-					// 周零售销售额总计
-					let retailPriceAmount = 0
-					// 加权成本总计
-					let costJiaquanSum = 0
-
-					data.forEach((v,dataIdx)=>{
-						// 解析成本详情数据
-						v['cost_info'] = JSON.parse(v['cost_info']);
-						// 解析分销详情数据
-						v['distribution_info'] = JSON.parse(v['distribution_info']);
-						// 计算库存总量
-						stockSum+=v['total'];
-						// 计算周毛利总计
-						maoriSum+=parseFloat(v['maori'])
-						// 提取牌价
-						brand_price = v['brand_price']
-						// 计算周零售总量
-						retailSum+=v['retail']
-						// 计算周单价总计
-						if (parseFloat(v['retail_price']) === 0 && v['retail'] == 0) {
-							retailPriceSingleSum = 0
-						} else {
-							retailPriceSingleSum+=parseFloat(v['retail_price'])/v['retail']
-						}
-						// 计算周销售总额
-						retailPriceAmount += parseFloat(v['retail_price']);
-						// 计算加权成本总计
-						costJiaquanSum+=parseFloat(v['cost_info']['cost_jiaquan'])
-					})
-
-					// 计算库存周平均值
-					let stockAve = parseInt(stockSum/count)
-
-					// 计算周毛利率
-					let maoriRate
-					if ( maoriSum === 0 && retailPriceAmount === 0 ) {
-						maoriRate = 0	
-					} else {
-						maoriRate = (maoriSum/retailPriceAmount).toFixed(2)
-					}
-					// 周零售价平均值
-					let retailPriceAve = retailPriceSingleSum/count
-					// 周加权成本平均值
-					let costJiaquanAve = costJiaquanSum/count
-
-					res[buildIdx]['库存量'] = stockAve
-					res[buildIdx]['周销量'] = retailSum
-					res[buildIdx]['周毛利率'] = (maoriRate*100).toFixed(2)
-					res[buildIdx]['平均售价'] = retailPriceAve.toFixed(2)
-					if( retailSum === 0 ) {
-						res[buildIdx]['库销比'] = stockAve.toFixed(2)
-					} else {
-						res[buildIdx]['库销比'] = (stockAve/(retailSum*4)).toFixed(2)
-					}
-					res[buildIdx]['效率值'] = ((retailSum/stockAve)*maoriRate/0.0125*100).toFixed(2)
-					res[buildIdx]['折扣'] = ((retailPriceAve/brand_price).toFixed(2))*10
-					res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
-
-				}
-				// console.log('组装后数据',res)
-				self.dates = Object.keys(res).reverse()
-
-				for(let i in res) {
-					let data = res[i]
-					Object.keys(data).forEach((k,i)=>{
-						if(self.amountDatas.hasOwnProperty(k)) {
-							self.amountDatas[k].unshift(data[k])
-						}
-						if(self.rateDatas.hasOwnProperty(k)) {
-							self.rateDatas[k].unshift(data[k])
-						}
-					})
-				}
-
-				// 开始调用echars的图形方法
-				this.setAmountLineOption()
-				this.setRateBarOption()
-				this.computeTotalDatas()
-			},
-
-			computeTotalDatas() {
-				var amountDatas = this.amountDatas
-				var rateDatas = this.rateDatas
-				var totalDatas = {...amountDatas,...rateDatas}
-				var computedResult = {} 
-				for(let i in totalDatas) {
-					var datas = totalDatas[i]
-					var sum = datas.reduce((prev,curr)=>{
-						return parseFloat(prev)+parseFloat(curr)
-					})
-					switch(i) {
-						case '周销量':
-							computedResult[i] = sum
-							break;
-						case '库销比':
-							computedResult[i] = sum
-							break;
-						default :
-							computedResult[i] = (sum/datas.length).toFixed(2)
-							break;
-					}
-				}
-				if( computedResult['周销量'] == 0 ) {
-					computedResult['库销比'] = computedResult['库存量']
-				} else {
-					computedResult['库销比'] = (computedResult['库存量'] / computedResult['周销量']).toFixed(2)
-				}
-				this.totalDatas = computedResult
 			},
 
 			setAmountLineOption() {
