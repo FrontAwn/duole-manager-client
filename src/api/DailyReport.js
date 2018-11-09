@@ -150,10 +150,18 @@ const dailyReportCurrentStockComputed = (datas)=>{
 				totalDatas[i] = sum
 				break;
 			case '库存量':
-				totalDatas[i] = parseInt(sum/datas.length)
+				if( sum === 0 ) {
+					totalDatas[i] = 0
+				} else {
+					totalDatas[i] = parseInt(sum/datas.length)
+				}
 				break;
 			default :
-				totalDatas[i] = NP.divide(sum,datas.length).toFixed(2)
+				if( sum === 0 ) {
+					totalDatas[i] = 0
+				} else {
+					totalDatas[i] = NP.divide(sum,datas.length).toFixed(2)
+				}
 				break;
 		}
 	}
