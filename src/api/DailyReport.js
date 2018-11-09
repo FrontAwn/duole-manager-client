@@ -17,6 +17,20 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		'效率值':[],
 		'折扣':[],
 	}
+
+	var totalAmountDatas = {
+		'库存量':[],
+		'周销量':[],
+		'平均售价':[],
+		'周成本':[],
+	}
+	var totalRateDatas = {
+		'周毛利率':[],
+		'库销比':[],
+		'效率值':[],
+		'折扣':[],
+	}
+
 	// console.log('原始数据',datas)
 	for (let weekIdx in datas) {
 		let data = datas[weekIdx]
@@ -24,6 +38,14 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		let buildIdx = `近${weekIdx[0]}周`;
 		res[buildIdx] = {}
 		if(count === 0) {
+			res[buildIdx]['库存量'] = NaN
+			res[buildIdx]['周销量'] = NaN
+			res[buildIdx]['周毛利率'] = NaN
+			res[buildIdx]['平均售价'] = NaN
+			res[buildIdx]['库销比'] = NaN
+			res[buildIdx]['效率值'] = NaN
+			res[buildIdx]['折扣'] = NaN
+			res[buildIdx]['周成本'] = NaN
 			continue
 		}
 		// 牌价
@@ -91,14 +113,15 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		let retailPriceAve = NP.divide(retailPriceSingleSum,count)
 		// 周加权成本平均值
 		let costJiaquanAve = NP.divide(costJiaquanSum,count)
+		console.log('costJiaquanAve',costJiaquanAve)
+
 
 		res[buildIdx]['库存量'] = stockAve
 		res[buildIdx]['周销量'] = retailSum
 		res[buildIdx]['周毛利率'] = NP.times(maoriRate,100).toFixed(2)
 		res[buildIdx]['平均售价'] = retailPriceAve.toFixed(2)
 		if( retailSum === 0 ) {
-			// res[buildIdx]['库销比'] = 0
-			continue;
+			res[buildIdx]['库销比'] = NaN
 		} else {
 			res[buildIdx]['库销比'] = NP.strip((stockAve/(retailSum*4))).toFixed(2)
 		}
@@ -109,15 +132,19 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			)*100
 		).toFixed(2)
 
+
 		res[buildIdx]['折扣'] = (
 			NP.divide(retailPriceAve,brandPrice)*10
 		).toFixed(2)
+
+
 		res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
+		console.log(buildIdx)
 
 	}
 	// console.log('组装后数据',res)
 	titles = Object.keys(res).reverse()
-
+	
 	for(let i in res) {
 		let data = res[i]
 		Object.keys(data).forEach((k,i)=>{
@@ -127,11 +154,18 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			if(rateDatas.hasOwnProperty(k)) {
 				rateDatas[k].unshift(data[k])
 			}
+
+			if(totalAmountDatas.hasOwnProperty(k) && !isNaN(data[k])) {
+				totalAmountDatas[k].unshift(data[k])
+			}
+			if(totalRateDatas.hasOwnProperty(k) && !isNaN(data[k])) {
+				totalRateDatas[k].unshift(data[k])
+			}
 		})
 	}
 
 	var resourceDatas = res
-	var buildedDatas = {...amountDatas,...rateDatas}
+	var buildedDatas = {...totalAmountDatas,...totalRateDatas}
 	var totalDatas = {} 
 	for(let i in buildedDatas) {
 		var datas = buildedDatas[i]
