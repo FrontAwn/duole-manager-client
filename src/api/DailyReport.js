@@ -1,5 +1,7 @@
 import NP from 'number-precision'
 
+
+// 日报现货表数据组装计算
 const dailyReportCurrentStockComputed = (datas)=>{
 	var res = {}
 	var titles = [] 

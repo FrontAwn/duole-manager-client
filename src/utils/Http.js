@@ -9,7 +9,7 @@ class Http {
 
 		switch( window.location.hostname  ) {
 			case '192.168.1.121':
-				this.setEnv('prod')
+				this.setEnv('remoteIp')
 				break;
 			case 'mc.tiangoutech.com':
 				this.setEnv('prod')
@@ -152,7 +152,7 @@ class Http {
 
 	setEnv(mode = 'dev') {
 		this.devHost = 'http://localhost:8101';
-		// this.prodHost = 'http://192.168.1.121:8101'
+		this.remoteIp = 'http://192.168.1.121:8101'
 		this.prodHost = 'http://ms.tiangoutech.com:8888'
 		this.mode = mode;
 		switch( this.mode ) {
@@ -161,6 +161,9 @@ class Http {
 				break;
 			case 'prod':
 				this.baseURL = this.prodHost
+				break;
+			case 'remoteIp':
+				this.baseURL = this.remoteIp
 				break;
 		}
 		this.http = axios.create({
