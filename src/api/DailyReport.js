@@ -180,7 +180,7 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		
 		switch(i) {
 			case '周销量':
-				totalDatas[i] = sum
+				totalDatas['总销量'] = sum
 				break;
 			case '库销比':
 				totalDatas[i] = sum
@@ -201,10 +201,10 @@ const dailyReportCurrentStockComputed = (datas)=>{
 				break;
 		}
 	}
-	if( totalDatas['周销量'] == 0 ) {
+	if( totalDatas['总销量'] == 0 ) {
 		totalDatas['库销比'] = 'Infinity'
 	} else {
-		totalDatas['库销比'] = NP.divide(totalDatas['库存量'],totalDatas['周销量']).toFixed(2)
+		totalDatas['库销比'] = NP.divide(totalDatas['库存量'],totalDatas['总销量']).toFixed(2)
 	}
 
 	return {
