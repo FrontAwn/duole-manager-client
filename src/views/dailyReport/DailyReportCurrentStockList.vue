@@ -1,10 +1,12 @@
 <template>
 	<div id="DailyReportCurrentStockList">
 
-		<div style="display: flex;justify-content: center;font-size: 16px;font-weight: bold;border-bottom: 1px solid #dddee1;">日报数据截止日期：
-				<span style="color: #F46565">{{lastDate}}</span>
+		<div style="display: flex;justify-content: center;font-size: 16px;font-weight: bold;border-bottom: 1px solid #dddee1;" v-if="lastDate != ''">日报数据截止日期：
+				<span style="color: #F46565" v-if="lastDate != ''">{{lastDate}}</span>
 			</div>
-		<div style="display: flex;justify-content: center;align-items: center;margin-top: 30px;font-size: 16px;color: #F46565" v-if="!state">货号:‘{{sku}}’没有找到日报数据</div>
+		<div style="display: flex;justify-content: center;align-items: center;margin-top: 70px;font-size: 18px;" v-if="!state">
+			此货号暂没有日报现货数据
+		</div>
 		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;" v-if="state">
 			<ECharts :options="amountLineByStockOption" style="width: 50%;"></ECharts>
 			<ECharts :options="amountLineByRetailOption" style="width: 50%;"></ECharts>
@@ -100,8 +102,11 @@
 							sku,
 						}
 					})
-					self.lastDate = res.data['lastDate']
-					delete res.data['lastDate'];
+
+					if (res.data.hasOwnProperty('lastDate')) {
+						self.lastDate = res.data['lastDate']
+						delete res.data['lastDate'];						
+					} 
 					
 					if( !self.checkDataExists(res.data) ) {
 						this.state = false
