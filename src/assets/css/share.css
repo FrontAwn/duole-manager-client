@@ -11,19 +11,3 @@
 	src:url('../font/Mouser.ttf');
 	src:url('../font/Mouser.woff');
 }
-
-/*标题*/
-@font-face {
-	font-family: "Title";
-	src:url('../font/FUTURAB.eot');
-	src:url('../font/FUTURAB.ttf');
-	src:url('../font/FUTURAB.woff');
-}
-
-/*正文*/
-@font-face {
-	font-family: "Content";
-	src:url('../font/optima.eot');
-	src:url('../font/optima.ttf');
-	src:url('../font/optima.woff');
-}
