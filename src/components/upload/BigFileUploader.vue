@@ -10,7 +10,7 @@
             />
 
             <div class="upload-file-input-icon-class">
-                <Icon type="ios-cloud-upload" size="68" style="color: #28282E"></Icon>
+                <Icon type="ios-cloud-upload" size="68" style="color: #00C3B6"></Icon>
                 <div style="padding-left: 20px;padding-right: 20px">{{uploadAreaText}}</div>
             </div>
         </form>

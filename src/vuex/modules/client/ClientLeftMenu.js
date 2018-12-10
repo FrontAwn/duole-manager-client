@@ -9,6 +9,15 @@ export default {
 					{name:"DailyReportCurrentStockUpload",label:"日报现货表上传",icon:"social-buffer"},
 					{name:"DailyReportCurrentStockSearch",label:"日报现货表查询",icon:"social-buffer"},
 				],
+
+				'毒App':[
+					{name:"DuAppSkuSave",label:"货号存储",icon:"social-buffer"},
+					// {name:"DuAppSkuListHandle",label:"货号处理",icon:"social-buffer"},
+					{name:"DuAppSkuByExcept",label:"异常货号",icon:"social-buffer"},
+					{name:"DuAppSkuDetailList",label:"导出数据",icon:"social-buffer"},
+
+					
+				],
 			},
 
 		},

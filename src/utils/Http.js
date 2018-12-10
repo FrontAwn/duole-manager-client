@@ -171,6 +171,10 @@ class Http {
 		});
 	}	
 
+	getBaseURL () {
+		return this.baseURL;
+	}
+
 	requestAsync(ops) {
 		var self = this
 		return new Promise((resolve,reject)=>{

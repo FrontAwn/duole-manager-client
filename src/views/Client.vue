@@ -7,9 +7,9 @@
 			</div>
 
 			<div id="content">
-				<!-- <div id="content-header"> -->
-					<!-- <ClientHeader></ClientHeader> -->
-				<!-- </div> -->
+				<div id="content-header">
+					<ClientHeader></ClientHeader>
+				</div>
 				<div id="content-info">
 					<keep-alive :include="includedCacheComponents">
 						<router-view></router-view>
@@ -40,6 +40,7 @@
 		name:"Client",
 		data:{
 			includedCacheComponents:[
+				'DuAppSkuListHandle',
 			],
 		},
 		mounted() {

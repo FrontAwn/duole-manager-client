@@ -2,7 +2,7 @@
 	<div id="ClientHeader">
 		<!-- <img :src="logo" id="admin-header-component-logo-box">
 		</img> -->
-		<!-- <div id="admin-header-component-logo-title">Emotion</div> -->
+		<div id="admin-header-component-logo-title">Duole Manager</div>
 	</div>
 </template>
 
@@ -41,7 +41,7 @@
 	}
 
 	#admin-header-component-logo-title {
-		margin-left: 10px;
+		margin-left: 25px;
 		font-size: 22px;
 		font-family: "Mouser";
 		color:#495060;

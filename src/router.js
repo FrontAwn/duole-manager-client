@@ -11,6 +11,11 @@ const DailyReportCurrentStockList = ()=>import('@/views/dailyReport/DailyReportC
 // 日报筛选页面
 const DailyReportCurrentStockSearch = ()=>import('@/views/client/DailyReportCurrentStockSearch')
 
+const DuAppSkuSave = ()=>import('@/views/client/DuAppSkuSave');
+const DuAppSkuListHandle = ()=>import('@/views/client/DuAppSkuListHandle')
+const DuAppSkuByExcept = ()=>import('@/views/client/DuAppSkuByExcept')
+const DuAppSkuDetailList = ()=>import('@/views/client/DuAppSkuDetailList')
+
 const routes = [
 
 	{
@@ -29,6 +34,33 @@ const routes = [
 	    		name:'DailyReportCurrentStockSearch',
 	    		component:DailyReportCurrentStockSearch,
 	    	},
+
+
+	    	{
+	    		path:'duapp/skuSave',
+	    		name:'DuAppSkuSave',
+	    		component:DuAppSkuSave,
+	    	},
+
+	    	{
+	    		path:'duapp/skuListHandle',
+	    		name:'DuAppSkuListHandle',
+	    		component:DuAppSkuListHandle
+	    	},
+
+	    	{
+	    		path:'duapp/byExcept',
+	    		name:'DuAppSkuByExcept',
+	    		component:DuAppSkuByExcept
+	    	},
+
+	    	{
+	    		path:'duapp/skuDetailList',
+	    		name:'DuAppSkuDetailList',
+	    		component:DuAppSkuDetailList
+	    	},
+	    	
+
 	    ]
 	},
 
