@@ -208,7 +208,7 @@ class Http {
 						opstions['headers'] = {
 							"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"
 						}
-						data = qs.stringify(data);
+						// data = qs.stringify(data);
 					} else if ( dataType === 'file' ) {
 						opstions['headers']	= {
 							"Content-Type":"multipart/form-data"	

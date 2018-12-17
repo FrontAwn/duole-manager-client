@@ -47,29 +47,38 @@
 
 		methods:{
 			async saveSku() {
+				let person = [
+					{'name':'cyf'},
+					{'name':'lh'},
+					{'name':'aa'}
+				]
+
+				let ages = [1,2,3]
+
 				if ( this.skus === '' ) {
 					this.$Notice.error({title:'请粘贴货号'});
 					return 
 				}
 
 
-				// console.log(this.skus.includes('\n'))
 				let skuArr = this.skus.split('\n')
 				let filterSkuArr = skuArr.filter((sku,idx)=>{
 					return sku !== ""
 				})
 
 				if ( skuArr.length > 1 ) {
-					if ( filterSkuArr[0].length != filterSkuArr[1].length ) {
+					if ( filterSkuArr[0].indexOf('货号') !== -1 ) {
 						filterSkuArr.splice(0,1)
 					}	
 				}
 
+				let form = new FormData()
+				form.append("skus", JSON.stringify(filterSkuArr));
+
 				let res = await Http.requestAsync({
+					method:'post',
 					url:'/duApp/saveSkus',
-					data:{
-						skus:filterSkuArr
-					}
+					data:form				
 				})
 
 				if (res.code == 400) {

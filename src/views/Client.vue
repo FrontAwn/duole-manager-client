@@ -40,11 +40,11 @@
 		name:"Client",
 		data:{
 			includedCacheComponents:[
-				'DuAppSkuListHandle',
+				'DuAppSkuListByExcept',
 			],
 		},
 		mounted() {
-			console.log(this.$store)
+			// console.log(this.$store)
 		},
 		components:{
 			ClientHeader,
@@ -95,7 +95,7 @@
 	#content{
 		width: 100%;
 		max-height:100%;
-		/*background: #FBFBFB;*/
+		/*background: #FAFAFA;*/
 		background: #FFFFFF;
 	}
 

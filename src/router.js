@@ -12,9 +12,8 @@ const DailyReportCurrentStockList = ()=>import('@/views/dailyReport/DailyReportC
 const DailyReportCurrentStockSearch = ()=>import('@/views/client/DailyReportCurrentStockSearch')
 
 const DuAppSkuSave = ()=>import('@/views/client/DuAppSkuSave');
-const DuAppSkuListHandle = ()=>import('@/views/client/DuAppSkuListHandle')
-const DuAppSkuByExcept = ()=>import('@/views/client/DuAppSkuByExcept')
-const DuAppSkuDetailList = ()=>import('@/views/client/DuAppSkuDetailList')
+const DuAppSkuListByExcept = ()=>import('@/views/client/DuAppSkuListByExcept')
+const DuAppSkuDetailExport = ()=>import('@/views/client/DuAppSkuDetailExport')
 
 const routes = [
 
@@ -43,23 +42,17 @@ const routes = [
 	    	},
 
 	    	{
-	    		path:'duapp/skuListHandle',
-	    		name:'DuAppSkuListHandle',
-	    		component:DuAppSkuListHandle
+	    		path:'duapp/skuListByExcept',
+	    		name:'DuAppSkuListByExcept',
+	    		component:DuAppSkuListByExcept
 	    	},
 
 	    	{
-	    		path:'duapp/byExcept',
-	    		name:'DuAppSkuByExcept',
-	    		component:DuAppSkuByExcept
+	    		path:'duapp/skuDetailExport',
+	    		name:'DuAppSkuDetailExport',
+	    		component:DuAppSkuDetailExport
 	    	},
 
-	    	{
-	    		path:'duapp/skuDetailList',
-	    		name:'DuAppSkuDetailList',
-	    		component:DuAppSkuDetailList
-	    	},
-	    	
 
 	    ]
 	},
