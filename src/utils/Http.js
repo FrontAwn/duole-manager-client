@@ -1,5 +1,4 @@
 import axios from 'axios'
-import qs from 'qs'
 import localStorage from "localStorage";
 import {isEmptyObj} from "utils";
 
@@ -208,7 +207,6 @@ class Http {
 						opstions['headers'] = {
 							"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"
 						}
-						// data = qs.stringify(data);
 					} else if ( dataType === 'file' ) {
 						opstions['headers']	= {
 							"Content-Type":"multipart/form-data"	
@@ -238,137 +236,6 @@ class Http {
 				})
 		})
 	}
-
-
-	// *******
-	// * callback回掉方式
-	// * 回调方法：succ,error,exception,inevitable
-	async request(ops) {
-		if(!ops.url) return;
-		let url = ops.url;
-		let method = ops.method ? ops.method : 'get';
-		let data = ops.data ? ops.data : {};
-		let dataType = ops.dataType ? ops.dataType : 'default'
-
-		ops.succ = ops.succ ? ops.succ : ()=>{};
-		ops.error = ops.error ? ops.error : ()=>{};
-		ops.exception = ops.exception ? ops.exception : ()=>{};
-		ops.inevitable = ops.inevitable ? ops.inevitable : ()=>{};
-
-		if( !isEmptyObj(data) && method === 'get' ) {
-			for(let key in data) {
-				if( typeof data[key] === "object" ) {
-					data[key] = JSON.stringify(data[key]);
-				}
-			}
-		}
-
-		ops.cache = ops.cache || false;
-		ops.baseURL = ops.baseURL || null;
-
-		if(ops.cache === true && localStorage.getItem(url) !== null) {
-			ops.succ(JSON.parse(localStorage.getItem(url)));
-			ops.inevitable();
-			return;
-		}
-
-		let opstions = {
-			url,
-			method,
-		}
-		switch(method) {
-			case 'post':
-				if ( dataType === 'default' ) {
-					opstions['headers']["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-					data = qs.stringify(data);
-				} else if ( dataType === 'file' ) {
-					opstions['headers']["Content-Type"] = "multipart/form-data"					
-				}	
-				opstions['data'] = data;
-				break;
-			default :
-				opstions['params'] = data;
-				break;
-		}
-
-		if ( ops.baseURL !== null )	{
-			opstions['baseURL']	= ops.baseURL
-		}
-
-		try {
-			let res = await this.http(opstions);
-			if(ops.cache === true) {
-				let cacheDatas = JSON.stringify(res.data['data']);
-				localStorage.setItem(url,cacheDatas);
-			}
-			ops.succ(res.data);
-		} catch(e) {
-			console.log(e);
-			ops.exception(e);
-			ops.inevitable();
-		}
-
-
-	}
-
-	// requestAll(options) {
-	// 	if(typeof options !== 'object' || Array.isArray(options) ) return;
-	// 	let self = this
-	// 	let length = 0;
-	// 	let count = 0;
-	// 	let res = {};
-	// 	length = ( Object.keys(options) ).length
-
-	// 	return new Promise(function(response,reject){
-
-	// 		for(let key in options) {
-	// 			let option = options[key]
-	// 			option['succ'] = datas=>{
-	// 				count += 1;
-	// 				res[key] = datas;
-	// 				if(Object.keys(res).length === length) {
-	// 					response(res)
-	// 				}
-	// 			}
-
-	// 			option['error'] = msg=>{
-	// 				count += 1;
-	// 				res[key] = {"ErrorMsg":msg};
-	// 				if(Object.keys(res).length === length) {
-	// 					response(res)
-	// 				}
-	// 			}
-
-	// 			(function(){
-	// 				self.request(option)
-	// 			}())
-	// 		}
-
-	// 	})
-
-	// }
-
-	// // 配合requestAll
-	// getDatas($datas,ops) {
-	// 	ops.error = ops.error ? ops.error : ()=>{}
-	// 	ops.inevitable = ops.inevitable ? ops.inevitable : ()=>{}
-	// 	let errors = [];
-	// 	let res = {};
-	// 	Object.keys($datas).forEach(key=>{
-	// 		if( $datas[key]['ErrorMsg'] ) {
-	// 			errors.push($datas[key]['ErrorMsg'])
-	// 		}else {
-	// 			ops[key] = ops[key] ? ops[key] : ()=>{}
-
-	// 			if( ops[key] && $datas[key] ) {
-	// 				ops[key]($datas[key]);
-	// 			}
-
-	// 		}
-	// 	})
-	// 	ops.error(errors);
-	// 	ops.inevitable();
-	// }
 
 	axios(ops) {
 		return axios(ops);

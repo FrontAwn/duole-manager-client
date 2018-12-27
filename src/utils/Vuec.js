@@ -17,8 +17,8 @@ class Vuec {
 		}
 
 		//LoadingComponent组件依赖
-		ops.loadingCache = ops.loadingCache ? ops.loadingCache : false;
-		ops.loaded = ops.loaded ? ops.loaded : false;
+		// ops.loadingCache = ops.loadingCache ? ops.loadingCache : false;
+		// ops.loaded = ops.loaded ? ops.loaded : false;
 
 		// 属性
 		ops.data = ops.data ? ops.data : {}
@@ -64,19 +64,19 @@ class Vuec {
 				})
 			}
 
-			if( ops.loadingCache === true && this.$store.state.App.isLoading === true) {
-				this.$store.dispatch("LoadingComponent/cache",ops.name);
-			}
+			// if( ops.loadingCache === true && this.$store.state.App.isLoading === true) {
+			// 	this.$store.dispatch("LoadingComponent/cache",ops.name);
+			// }
 
 			ops.created.bind(this)()
 		}
 
 		let mountedLifecycle = function(){
-			if( ops.loaded === true  && this.$store.state.App.isLoading === true) {
-				this.$store.dispatch("LoadingComponent/loaded");
-			} else {
-				console.log('如果loaded属性不为true时，请在恰当的时间调用this.$store.dispatch("LoadingComponent/loaded")函数来关闭loading组件')
-			}
+			// if( ops.loaded === true  && this.$store.state.App.isLoading === true) {
+			// 	this.$store.dispatch("LoadingComponent/loaded");
+			// } else {
+			// 	console.log('如果loaded属性不为true时，请在恰当的时间调用this.$store.dispatch("LoadingComponent/loaded")函数来关闭loading组件')
+			// }
 			ops.mounted.bind(this)()
 		}
 
@@ -170,32 +170,13 @@ class Vuec {
 
 	}
 
-	static vuePropertySet(ops) {
-		if(isEmptyObj(ops) || typeof ops !== 'object') return
-		let config = {
-			writable:false,
-			enmerable:false,
-			configurable:false
-		}
-		let keys = Object.keys(Vue.prototype)
-		let props = {}
-		for(let i in ops) {
-			if(!keys.includes(i)) {
-				let value = {value:ops[i]}
-				let v = {...config,...value}
-				props[i] = v	
-			}
-		}
-		Object.defineProperties(Vue.prototype,props)
-	}
-
 }
 
 export default Vuec;
 
-let {vuec,vuePropertySet} = Vuec;
+let {vuec} = Vuec;
 
-export {vuec,vuePropertySet}
+export {vuec}
 
 
 
