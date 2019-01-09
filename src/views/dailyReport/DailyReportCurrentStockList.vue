@@ -5,7 +5,7 @@
 				<span style="color: #F46565" v-if="lastDate != ''">{{lastDate}}</span>
 			</div>
 		<div style="display: flex;justify-content: center;align-items: center;margin-top: 70px;font-size: 18px;" v-if="!state">
-			此货号暂没有日报现货数据
+			此货号暂没有近4周日报现货数据
 		</div>
 		<div style="width: 100%;height: 100%;display: flex;margin-top:20px;" v-if="state">
 			<ECharts :options="amountLineByStockOption" style="width: 50%;"></ECharts>
