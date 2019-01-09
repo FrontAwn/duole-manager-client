@@ -58,14 +58,15 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		let maoriSum = 0
 		// 零售总量
 		let retailSum = 0
-		// 周零售单价总计
-		let retailPriceSingleSum = 0
 		// 周零售销售额总计
 		let retailPriceAmount = 0
 		// 加权成本总额
 		let costJiaquanSum = 0
 
 		data.forEach((v,dataIdx)=>{
+			v['retail_price'] = NP.strip(parseFloat(v['retail_price']))
+			v['retail'] = NP.strip(parseInt(v['retail']))
+
 			// 解析成本信息
 			v['cost_info'] = JSON.parse(v['cost_info']);
 			// 计算库存总计
@@ -80,20 +81,13 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			// 计算零售总量
 			retailSum+=v['retail']
 
-			// 计算周零售单价总计
-			if (parseFloat(v['retail_price']) === 0 && v['retail'] == 0) {
-				retailPriceSingleSum = 0
-			} else {
-				retailPriceSingleSum = NP.plus( 
-					NP.divide(NP.strip(parseFloat(v['retail_price'])),v['retail']),
-					NP.strip(retailPriceSingleSum)
-				)
-			}
 			// 计算周零售销售额总计
 			retailPriceAmount = NP.plus(
-				NP.strip(parseFloat(v['retail_price'])),
+				v['retail_price'],
 				NP.strip(retailPriceAmount)
 			)
+
+
 			// 计算加权成本周总计
 			costJiaquanSum = NP.plus(
 				NP.strip(parseFloat(v['cost_info']['cost_jiaquan'])),
@@ -101,7 +95,9 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			)
 		})
 
-
+		console.log(retailSum,'retailSum')
+		console.log(retailPriceAmount,'retailPriceAmount')
+		// console.log()
 		// 库存周平均值
 		let stockAve = parseInt(stockSum/count)
 		// 周毛利率
@@ -112,10 +108,9 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			maoriRate = NP.divide(maoriSum,retailPriceAmount)
 		}
 		// 周零售销售价平均值
-		let retailPriceAve = NP.divide(retailPriceSingleSum,count)
+		let retailPriceAve = parseFloat(NP.divide(retailPriceAmount,retailSum).toFixed(2))
 		// 周加权成本平均值
 		let costJiaquanAve = NP.divide(costJiaquanSum,count)
-		console.log('costJiaquanAve',costJiaquanAve)
 
 
 		res[buildIdx]['库存量'] = stockAve
@@ -141,8 +136,7 @@ const dailyReportCurrentStockComputed = (datas)=>{
 
 
 		res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
-		console.log(buildIdx)
-
+		// break;
 	}
 	// console.log('组装后数据',res)
 	titles = Object.keys(res).reverse()
