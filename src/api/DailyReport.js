@@ -58,7 +58,7 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		let maoriSum = 0
 		// 零售总量
 		let retailSum = 0
-		// 周零售销售额总计
+		// 零售总销售额
 		let retailPriceAmount = 0
 		// 加权成本总额
 		let costJiaquanSum = 0
@@ -78,15 +78,14 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			)
 			// 得到牌价
 			brandPrice = v['brand_price']
-			// 计算零售总量
+			// 计算 零售总量
 			retailSum+=v['retail']
 
-			// 计算周零售销售额总计
+			// 计算 周零售总额
 			retailPriceAmount = NP.plus(
 				v['retail_price'],
 				NP.strip(retailPriceAmount)
 			)
-
 
 			// 计算加权成本周总计
 			costJiaquanSum = NP.plus(
@@ -95,9 +94,6 @@ const dailyReportCurrentStockComputed = (datas)=>{
 			)
 		})
 
-		console.log(retailSum,'retailSum')
-		console.log(retailPriceAmount,'retailPriceAmount')
-		// console.log()
 		// 库存周平均值
 		let stockAve = parseInt(stockSum/count)
 		// 周毛利率
@@ -107,9 +103,9 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		} else {
 			maoriRate = NP.divide(maoriSum,retailPriceAmount)
 		}
-		// 周零售销售价平均值
-		let retailPriceAve = parseFloat(NP.divide(retailPriceAmount,retailSum).toFixed(2))
-		// 周加权成本平均值
+		// 销售平均值
+		let retailPriceAve = NP.divide(retailPriceAmount,retailSum)
+		// 权成本平均值
 		let costJiaquanAve = NP.divide(costJiaquanSum,count)
 
 
@@ -138,6 +134,8 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
 		// break;
 	}
+
+
 	// console.log('组装后数据',res)
 	titles = Object.keys(res).reverse()
 	
