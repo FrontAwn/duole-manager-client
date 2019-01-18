@@ -6,8 +6,9 @@
 					<Input icon="search" v-model="searchSku" placeholder="请输入要搜索的货号..."></Input>
 				</div>
 				<div style="width: 30%;height: 100%;display: flex;align-items: center;">
-					<Button type="primary" icon="archive" @click="exportStock">
-						下载库存
+					<Button type="primary" icon="archive" :loading="downloadStockLoading" @click="exportStock">
+				        <span v-if="!downloadStockLoading">下载库存</span>
+				        <span v-else>正在下载</span>
 				    </Button>
 				</div>
 			</div>
@@ -59,6 +60,7 @@
 
 			sizesOrdered: 'MISC 2C 3C  4C  5C  6C  7C  8C  9C  10C 10.5C 11C 11.5C 12C 12.5C 13.5C 13C 1Y 1.5Y 2Y 2.5Y 3Y 3.5Y 4Y  4.5Y  5Y  5.5Y  6Y  6.5Y  7Y 5  5.5 6 6.5 7 7.5 8 8.5 9 9.5 10  10.5  11  11.5  12 12.5 13 XS  S M L XL XXL XXXL 2XL 3XL 4-5.5 6-7.5 8-9.5 10- 12- 14-16'.replace(/  /img, ' ').split(' '),
 
+			downloadStockLoading:false,
 		},
 		async mounted(){
 			this.getList()
@@ -92,8 +94,13 @@
 			},
 
 			async exportStock() {
-				let targetServer = `${Http.getBaseURL()}/nike/exportStock`;
-				window.open(targetServer)
+				this.downloadStockLoading = true
+				let res = await Http.requestAsync({
+					url:"/nike/execGenerateStockCommand"
+				})
+				this.downloadStockLoading = false
+				let targetServer = `${Http.getBaseURL()}/nike/downloadStockExcelFile`;
+				window.location.href = targetServer
 			},
 		},
 
