@@ -10,17 +10,25 @@
 		</div>
 
 
+		<div class="admin-component-inner-box" style="border-bottom: 1px solid #CDCDCD" v-if="show">
+			<div style="font-size: 16px;padding-bottom: 8px;color:#20282B;font-weight: bold; ">当前货号: {{sku}}</div>
+		</div>
 
 		<div class="admin-component-inner-box" v-if="show">
-			<Card class="admin-iview-core-card">
-				<div slot="title">
-					<Icon type="ios-circle-filled"></Icon>
-					合计
-				</div>
+			<div style="font-size: 12px;padding-top: 8px;color:#5D6B77 ">数据截止日期: {{lastDate}}</div>
+		</div>
 
-				<div slot="extra">
+		<div class="admin-component-inner-box" v-if="show">
+
+			<Card class="admin-iview-core-card">
+				<!-- <div slot="title">
+					<Icon type="ios-circle-filled"></Icon>
+				</div> -->
+
+				<!-- <div slot="extra">
 					数据截止日期：{{lastDate}}
-				</div>
+				</div> -->
+				<div style="font-size: 18px;font-weight: bold;margin-bottom: 18px;">合计</div>
 
 
 				<div class="total-table-ver-box">
@@ -73,14 +81,14 @@
 
 		<div class="admin-component-inner-box" v-if="show">
 			<Card class="admin-iview-core-card">
-				<div slot="title">
+				<!-- <div slot="title">
 					<Icon type="ios-circle-filled"></Icon>
 					图形统计
 				</div>
 
 				<div slot="extra">
 					数据截止日期：{{lastDate}}
-				</div>
+				</div> -->
 
 				<div style="width: 100%;display: flex;flex-wrap:wrap; ">
 					<ECharts :options="amountLineByStockOption" class="echarts-image-container"></ECharts>
@@ -102,10 +110,7 @@
 </template>
 
 <script type="text/javascript">
-	import Vue from "vue";
-	import iView from "iview";
-	import 'iview/dist/styles/iview.css';
-	import '@/assets/less/theme.less';
+	
 	import "@/assets/css/admin.css";
 	import {vuec} from "vuec"
 	import Http from "@/utils/Http"
@@ -113,7 +118,6 @@
 	import ECharts from 'vue-echarts/components/ECharts'
 	import 'echarts/lib/chart/bar'
 	import 'echarts/lib/component/title'
-	Vue.use(iView);
 	export default vuec({
 		name:'DailyReportCurrentStockListBySearch',
 		data:{
@@ -141,7 +145,8 @@
 		},
 
 		mounted(){
-			this.sku = '908978-001'
+			// this.sku = '908978-001'
+			this.sku = this.$route.params['sku']
 		},
 
 		methods:{

@@ -12,9 +12,13 @@ const DailyReportCurrentStockListBySearch = ()=>import('@/views/dailyReport/Dail
 // 日报筛选页面
 const DailyReportCurrentStockSearch = ()=>import('@/views/client/DailyReportCurrentStockSearch')
 
+// duapp
 const DuAppSkuSave = ()=>import('@/views/client/DuAppSkuSave');
 const DuAppSkuListByExcept = ()=>import('@/views/client/DuAppSkuListByExcept')
 const DuAppSkuDetailExport = ()=>import('@/views/client/DuAppSkuDetailExport')
+
+// www.nike.net
+const NikeStockList = ()=>import('@/views/nike/NikeStockList')
 
 const routes = [
 
@@ -65,10 +69,17 @@ const routes = [
 	},
 
 	{
-		path:"/dailyReport/currentStockListBy/search",
+		path:"/dailyReport/currentStockListBy/search/:sku",
 		name:"DailyReportCurrentStockListBySearch",
 		component:DailyReportCurrentStockListBySearch
 	},
+
+
+	{
+		path:'/nike/stock/list',
+		name:'NikeStockList',
+		component:NikeStockList
+	}
 
 ]
 

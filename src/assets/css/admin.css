@@ -3,6 +3,70 @@
 @custom-media --ipad (min-width: 769px) and (max-width: 1024px);
 @custom-media --phone (max-width: 768px);
 
+* {
+	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+
+.flex-container {
+	width: 100%;
+	display: flex;
+}
+
+.flex-container-justify-between {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+.flex-container-wrap {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.flex-container-justify-center-wrap {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.flex-container-justify-center {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+
+.left-container {
+	width: 70%;
+	border-right:1px dashed #e9eaec;
+}
+
+.right-container {
+	width: 30%;
+	display: flex;
+	flex-direction:column;
+	align-items: center;
+	justify-content: center;
+}
+
+.core-container {
+	width: 1000px;
+	width:800px ?if media (--ipad);
+	width:1200px ?if media (--large);
+	max-width: 90%;
+	margin-top:30px;
+}
+
+
+.interval-container {
+	margin-bottom: 10px;
+}
+
+
+
+
 .admin-component-flex-box {
 	width: 100%;
 	display: flex;
