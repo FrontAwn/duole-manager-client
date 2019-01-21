@@ -79,7 +79,13 @@ const routes = [
 		path:'/nike/stock/list',
 		name:'NikeStockList',
 		component:NikeStockList
-	}
+	},
+
+	{
+		path:'/nike/stock/list/:conditions',
+		name:'NikeStockList',
+		component:NikeStockList
+	},
 
 ]
 

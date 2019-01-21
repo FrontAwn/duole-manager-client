@@ -3,7 +3,7 @@
 		<div id="header" class="flex-container-justify-center">
 			<div style="width: 93%;height: 100%;display: flex;justify-content: space-between;">
 				<div style="width: 60%;height: 100%;display: flex;align-items: center;">
-					<Input icon="search" v-model="searchSku" placeholder="请输入要搜索的货号..."></Input>
+					<Input id="search" icon="search" v-model="searchSku" placeholder="请输入要搜索的货号..."></Input>
 				</div>
 				<div id="header-right">
 					<Button type="primary" icon="archive" :loading="downloadStockLoading" @click="exportStock">
@@ -20,7 +20,7 @@
 				<div style="margin-top: 90px;width: 100%;display: flex;justify-content: space-between;flex-wrap: wrap;">
 					<Card class="card-content" :key="idx" v-for="(data,idx) in ls">
 						<Spin fix v-show="!data['loadInfoState']"></Spin>
-						<div slot="title">{{data.sku}}</div>
+						<div slot="title" style="font-weight: bold">{{data.sku}}</div>
 						<div slot="extra" style="position: relative;">
 							 <Tag 
 							 	v-if="data['loadInfoState'] && data['info']['closeout']"
@@ -47,14 +47,22 @@
 									type="primary"
 									@click="openNikeLink(data.sku)"
 								>Nike连接</Button>
+
+								<div 
+									style="width: 100%;margin-top: 5px;display: flex;justify-content: center;font-size:12px;font-weight: bold" 
+								>{{moment(data.createdAt).format("YYYY-MM-DD")}}</div>
+
+								<div 
+									style="width: 100%;display: flex;justify-content: center;font-size:12px;font-weight: bold" 
+								>{{moment(data.createdAt).format("HH:mm:ss")}}</div>
 							</div>
 
 							<!-- right -->
 							<div 
-								style="width: 100%;display: flex;justify-content: flex-end;"
+								style="display: flex;justify-content: flex-end;flex: 1"
 								v-if="data['loadInfoState']"
 							>
-								<div style="width: 97%;height: 100px;">
+								<div style="width: 97%;">
 									<div class="content-sku-name">
 										<span style="font-weight: bold;">{{data.info.name}}</span>
 										<span style="color:#E9935F;margin-left: 10px;font-weight: bold;">¥{{data.info.retailPrice/100}}</span>
@@ -71,10 +79,10 @@
 										<div 
 											v-for="size in sizesOrdered"
 											v-if="data.stockCurrent[size] || data.stockChange[size]"
-											style="width: 95px;height:30px;margin-right: 5px;margin-left:5px;margin-bottom: 10px;display: flex;" 
+											style="width: 98px;height:30px;margin-right: 5px;margin-left:5px;margin-bottom: 10px;display: flex;" 
 										>
-											<div style="width: 30px;height:30px;background: #20282B;border-top-left-radius: 5px;border-bottom-left-radius: 5px;display: flex;justify-content: center;align-items: center;color:#FFFFFF">{{size}}</div>
-											<div style="width: 55px;height:30px;border:1px solid #20282B;border-top-right-radius: 5px;border-bottom-right-radius: 5px;display: flex;justify-content: center;align-items: center;">
+											<div style="width: 40px;height:30px;background: #20282B;border-top-left-radius: 3px;border-bottom-left-radius: 3px;display: flex;justify-content: center;align-items: center;color:#FFFFFF">{{size}}</div>
+											<div style="width: 58px;height:30px;border:1px solid #20282B;border-top-right-radius: 3px;border-bottom-right-radius: 3px;display: flex;justify-content: center;align-items: center;">
 												<span>{{data.stockCurrent[size]}}</span>
 												<span v-if="data.stockChange[size]" style="margin-left: 5px;color:#F46565">{{data.stockChange[size]}}</span>
 											</div>
@@ -83,14 +91,24 @@
 
 								</div>
 							</div>
-
-
 						</div>
-						<div style="width: 100%;height: 200px;"></div>
-
 
 					</Card>
 				</div>
+
+				<!-- page -->
+				<div 
+					style="margin-top: 20px;display: flex;justify-content: flex-end;" 
+					v-if="count!==null">
+					<Page 
+						:total="count" 
+						:page-size="nikeStockChangeConditions['length']"
+						:current="nikeStockChangeConditions['page']"
+						@on-change="changePage"
+					></Page>
+				</div>
+				<div style="width: 100%;height:100px;"></div>
+
 			</div>
 		</div>
 		<!-- <div style="width: 50%;">{{sizesOrdered.join(",")}}</div> -->
@@ -105,12 +123,15 @@
 	import Vue from "vue";
 	import iView from "iview";
 	import Http from "@/utils/Http.js"
+	import {copy} from "@/utils/Utils"
+	import Shortcut from "@/utils/Shortcut"
 	const moment = require("moment")
 	Vue.use(iView);
 
 	export default vuec({
 		name:"NikeStockList",
 		data:{
+			count:null,
 			moment,
 			loading:false,
 			searchSku:"",
@@ -125,7 +146,7 @@
 						"$gte":2
 					}
 				},
-				page:14,
+				page:1,
 				length:20,
 				order:[['orderScore','DESC'],['id','DESC']],
 			},
@@ -135,31 +156,89 @@
 
 			downloadStockLoading:false,
 		},
+
+		async created() {
+			var self = this
+			if ( this.$route.params['conditions'] ) {
+				var conditions = this.$route.params['conditions'].split("&")
+				if (conditions.length === 0) return
+				conditions.forEach((content,idx)=>{
+					let contentArr = content.split("=")
+					let key = contentArr[0]
+					let value = contentArr[1]
+					if (self.nikeStockChangeConditions[key]) {
+						self.nikeStockChangeConditions[key] = value
+					}
+
+					if ( key === "search" ) {
+						self.nikeStockChangeConditions['where']['sku'] = {
+							"$like":value+"%",
+						}
+					}
+				})
+			}
+		},
+
 		async mounted(){
+			let self = this
+			Shortcut.bind('s',()=>{
+				if ( self.nikeStockChangeConditions['page'] === count ) return;
+				self.nikeStockChangeConditions['page'] += 1
+				self.getList()
+			})
+			Shortcut.bind('w',()=>{
+				if (self.nikeStockChangeConditions['page'] === 1) return
+				self.nikeStockChangeConditions['page'] -= 1
+				self.getList()
+			})
+
+			Shortcut.bind('f',(e)=>{
+				e.preventDefault();
+				document.querySelector("#search > input").focus()
+			})
+
+			Shortcut.bind('c',(e)=>{
+				e.preventDefault();
+				document.querySelector("#search > input").focus()
+				self.searchSku = ""
+			})
+
+			Shortcut.mount();
 			this.getList()
 		},
 
 		methods:{
 			async getList() {
 				let self = this
+				self.ls = []
+				self.count = null
 				let res = await Http.requestAsync({
-					url:"/api/finds",
-					data:self.nikeStockChangeConditions
+					url:"/nike/getChangeList",
+					data:copy(self.nikeStockChangeConditions)
 				})
-				let datas = res['data']
+				self.count = res['count'] 
+				let datas = res['ls']
+				if ( datas.length === 0 ) {
+					self.ls = []
+					return; 
+				}
 				for (let [idx,data] of datas.entries()) {
 					let sku = data['sku']
 					if(data.type==='newSku' || data.type==='newBatches') {
 						data.stockChange = data.stock
 					}
 					data.stockCurrent = {}
-					data.stockChange = JSON.parse(data.stockChange)
-					data.stock = JSON.parse(data.stock)
+					try{
+						data.stockChange = JSON.parse(data.stockChange)
+						data.stock = JSON.parse(data.stock)	
+					}catch(e){}
+					
 					data.loadInfoState = false
 					self.skus[idx] = sku
 				}
 				self.ls = JSON.parse(JSON.stringify(datas))
 				self.getSkuDetail()
+
 			},
 
 			async getSkuDetail() {
@@ -178,6 +257,12 @@
 						}
 					})
 				}
+			},
+
+			async changePage(page) {
+				let self = this
+				self.nikeStockChangeConditions['page'] = page
+				self.getList();
 			},
 
 			async exportStock() {
@@ -202,7 +287,20 @@
 		},
 
 		watch:{
-
+			'searchSku':function() {
+				let self = this
+				if ( 
+					self.searchSku === "" && 
+					self.nikeStockChangeConditions['where'].hasOwnProperty('sku') ) 
+				{	
+					delete self.nikeStockChangeConditions['where']['sku']
+				} else {
+					self.nikeStockChangeConditions['where']['sku'] = {}
+					self.nikeStockChangeConditions['where']['sku']['$like'] = `${self.searchSku}%`
+				}
+				self.nikeStockChangeConditions['page'] = 1;
+				self.getList()
+ 			}
 		},
 	})
 
@@ -240,7 +338,6 @@
 	.card-content {
 		width: 49%;
 		width: 100% ?if media (--phone);
-		height: 300px;
 		margin-bottom: 20px;
 		position: relative;
 	}
