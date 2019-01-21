@@ -182,7 +182,7 @@
 		async mounted(){
 			let self = this
 			Shortcut.bind('s',()=>{
-				if ( self.nikeStockChangeConditions['page'] === count ) return;
+				if ( self.nikeStockChangeConditions['page'] === self.count ) return;
 				self.nikeStockChangeConditions['page'] += 1
 				self.getList()
 			})
