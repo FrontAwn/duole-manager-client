@@ -181,12 +181,17 @@
 
 		async mounted(){
 			let self = this
-			Shortcut.bind('s',()=>{
+
+			Shortcut.bind('s',(e)=>{
+				e.preventDefault();
+				document.querySelector("#search > input").blur()
 				if ( self.nikeStockChangeConditions['page'] === self.count ) return;
 				self.nikeStockChangeConditions['page'] += 1
 				self.getList()
 			})
-			Shortcut.bind('w',()=>{
+			Shortcut.bind('w',(e)=>{
+				e.preventDefault();
+				document.querySelector("#search > input").blur()
 				if (self.nikeStockChangeConditions['page'] === 1) return
 				self.nikeStockChangeConditions['page'] -= 1
 				self.getList()
