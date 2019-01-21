@@ -229,10 +229,10 @@
 				}
 				for (let [idx,data] of datas.entries()) {
 					let sku = data['sku']
+					data['stockCurrent'] = {}
 					if(data.type==='newSku' || data.type==='newBatches') {
 						data.stockChange = data.stock
 					}
-					data.stockCurrent = {}
 					try{
 						data.stockChange = JSON.parse(data.stockChange)
 						data.stock = JSON.parse(data.stock)	
