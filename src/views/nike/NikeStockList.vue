@@ -46,15 +46,16 @@
 									style="width: 100%;margin-top: 5px;" 
 									type="primary"
 									@click="openNikeLink(data.sku)"
-								>Nike连接</Button>
-
-								<div 
-									style="width: 100%;margin-top: 5px;display: flex;justify-content: center;font-size:12px;font-weight: bold" 
-								>{{moment(data.createdAt).format("YYYY-MM-DD")}}</div>
+								>Nike链接</Button>
 
 								<div 
 									style="width: 100%;display: flex;justify-content: center;font-size:12px;font-weight: bold" 
-								>{{moment(data.createdAt).format("HH:mm:ss")}}</div>
+								>{{data.createDate}}</div>
+
+								<div 
+									style="width: 100%;display: flex;justify-content: center;font-size:12px;font-weight: bold" 
+								>{{data.createTime}}</div>
+								
 							</div>
 
 							<!-- right -->
@@ -229,6 +230,9 @@
 				}
 				for (let [idx,data] of datas.entries()) {
 					let sku = data['sku']
+					let createAtArr = data.createdAt.split("T")
+					data['createDate'] = createAtArr[0]
+					data['createTime'] = (createAtArr[1].split("."))[0]
 					data['stockCurrent'] = {}
 					if(data.type==='newSku' || data.type==='newBatches') {
 						data.stockChange = data.stock
@@ -237,8 +241,8 @@
 						data.stockChange = JSON.parse(data.stockChange)
 						data.stock = JSON.parse(data.stock)	
 					}catch(e){}
-					
 					data.loadInfoState = false
+
 					self.skus[idx] = sku
 				}
 				self.ls = JSON.parse(JSON.stringify(datas))
