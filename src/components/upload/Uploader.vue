@@ -259,17 +259,17 @@
  				let self = this
  				let sliceChunkSize = self.uploadChunkSize * 1024 * 1024
  				let amountLength = Object.keys(self.fileList).length
- 				let idx = 1
  				for(let [md5,chunks] of Object.entries(needUploadChunks)) {
+
+ 					self.$emit("on-process",{
+						amountLength,
+						uploaded:self.uploaded,
+						filename:self.fileList[md5]['name']
+					})
 
  					if ( chunks.length === 0 ) {
  						console.log(`${self.fileList[md5]['name']} 已经存在`)
  						await self.mergeChunks(md5)
- 						self.$emit("on-process",{
- 							amountLength,
- 							uploaded:self.uploaded,
- 							filename:self.fileList[md5]['name']
- 						})
  						continue;
  					}
  					let fileContent = self.fileList[md5]['content']
@@ -289,13 +289,7 @@
 			 					data:form
 			 				})	
  					}
- 					console.log(`${self.fileList[md5]['name']} 开始合成`)
  					await self.mergeChunks(md5)
- 					self.$emit("on-process",{
-						amountLength,
-						uploaded:self.uploaded,
-						filename:self.fileList[md5]['name']
-					})
  				}
  				self.$emit("on-uploaded",self.fileList);
  				self.fileList = {}
