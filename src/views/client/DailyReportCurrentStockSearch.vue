@@ -195,7 +195,7 @@
 				var self = this
 				try {
 					var res = await Http.requestAsync({
-						url:'/dailyReport/getBeforeFrouWeekCurrentStockBySku',
+						url:'/daily/getExistingLsByWeek',
 						data:{
 							sku:self.sku,
 						}

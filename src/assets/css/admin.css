@@ -18,6 +18,12 @@
 	justify-content: space-between;
 }
 
+.flex-container-justify-end {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+}
+
 .flex-container-wrap {
 	width: 100%;
 	display: flex;

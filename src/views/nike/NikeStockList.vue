@@ -126,7 +126,6 @@
 	import Http from "@/utils/Http.js"
 	import {copy} from "@/utils/Utils"
 	import Shortcut from "@/utils/Shortcut"
-	const moment = require("moment")
 	Vue.use(iView);
 
 	export default vuec({
