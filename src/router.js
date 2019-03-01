@@ -14,7 +14,6 @@ const DailyReportCurrentStockSearch = ()=>import('@/views/client/DailyReportCurr
 
 // duapp
 const DuAppSkuSave = ()=>import('@/views/client/DuAppSkuSave');
-const DuAppSkuListByExcept = ()=>import('@/views/client/DuAppSkuListByExcept')
 const DuAppSkuDetailExport = ()=>import('@/views/client/DuAppSkuDetailExport')
 
 // www.nike.net
@@ -44,12 +43,6 @@ const routes = [
 	    		path:'duapp/skuSave',
 	    		name:'DuAppSkuSave',
 	    		component:DuAppSkuSave,
-	    	},
-
-	    	{
-	    		path:'duapp/skuListByExcept',
-	    		name:'DuAppSkuListByExcept',
-	    		component:DuAppSkuListByExcept
 	    	},
 
 	    	{

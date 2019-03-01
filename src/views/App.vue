@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<!-- <LoadingComponent v-if="isLoading"></LoadingComponent> -->
 		<transition name="transfer">
 			<keep-alive :include="includedCacheComponents">
 					<router-view></router-view>	
@@ -10,18 +9,13 @@
 </template>
 
 <script>
-	import LoadingComponent from '@/components/loading/LoadingComponent'
 	import {vuec} from "vuec"
 
 	export default vuec({
 		name:"App",
-		namespace:"App",
-		loadingCache:false,
-		loaded:false,
-		vuex:true,
-		states:['isLoading','includedCacheComponents'],
-		components:{
-			LoadingComponent,
+		data:{
+			isLoading:true,
+			includedCacheComponents:[],
 		}
 	})
 </script>

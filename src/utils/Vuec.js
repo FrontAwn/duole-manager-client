@@ -2,19 +2,19 @@ import Emitter from "@/utils/Emitter"
 import Vue from "vue";
 import {mapGetters,mapState,mapMutations,mapActions} from 'vuex'
 import {isEmptyObj} from "utils"
-import store from "@/store";
+// import store from "@/store";
 
 class Vuec {
 
 	static vuec(ops) {
 		if(typeof ops !== 'object') throw new Error('VuecFunctionError:方法参数只接受object类型');
-		if(ops.vuex && typeof ops.vuex !== 'boolean') throw new Error('VuecFunctionError:如果组建使用vuex请把vuex属性传值true，否则传值false');
+		// if(ops.vuex && typeof ops.vuex !== 'boolean') throw new Error('VuecFunctionError:如果组建使用vuex请把vuex属性传值true，否则传值false');
 		if(!ops.name) throw new Error('VuecFunctionError:请设定组建的name属性');
-		ops.namespace = ops.namespace ? ops.namespace : null
-		ops.vuex = ops.vuex ? ops.vuex : false;
-		if(ops.namespace === null && ops.vuex === true) {
-			throw new Error('VuecFunctionError:如果使用vuex属性为true时，必须定义namespace属性');
-		}
+		// ops.namespace = ops.namespace ? ops.namespace : null
+		// ops.vuex = ops.vuex ? ops.vuex : false;
+		// if(ops.namespace === null && ops.vuex === true) {
+		// 	throw new Error('VuecFunctionError:如果使用vuex属性为true时，必须定义namespace属性');
+		// }
 
 		//LoadingComponent组件依赖
 		// ops.loadingCache = ops.loadingCache ? ops.loadingCache : false;
@@ -31,12 +31,12 @@ class Vuec {
 		ops.events = ops.events ? ops.events : [] 
 
 		// vuex
-		ops.modules = ops.modules ? ops.modules : {}
-		ops.unmodules = ops.unmodules ? ops.unmodules : false
-		ops.getters = ops.getters ? ops.getters : [] 
-		ops.mutations = ops.mutations ? ops.mutations : [] 
-		ops.states = ops.states ? ops.states : [] 
-		ops.actions = ops.actions ? ops.actions : [] 
+		// ops.modules = ops.modules ? ops.modules : {}
+		// ops.unmodules = ops.unmodules ? ops.unmodules : false
+		// ops.getters = ops.getters ? ops.getters : [] 
+		// ops.mutations = ops.mutations ? ops.mutations : [] 
+		// ops.states = ops.states ? ops.states : [] 
+		// ops.actions = ops.actions ? ops.actions : [] 
 
 		// 生命周期
 		ops.beforeCreate = ops.beforeCreate ? ops.beforeCreate : ()=>{}
@@ -49,9 +49,9 @@ class Vuec {
 
 
 		let beforeCreateLifecycle = function() {
-			if( ops.vuex === true && ops.namespace !== null ) {
-				this.$store.state[ops.namespace]['$self'] = this;
-			}
+			// if( ops.vuex === true && ops.namespace !== null ) {
+			// 	this.$store.state[ops.namespace]['$self'] = this;
+			// }
 
 			ops.beforeCreate.bind(this)()
 		}
@@ -85,12 +85,12 @@ class Vuec {
 				Emitter.off(this)
 			}
 
-			if(ops.unmodules === true && ops.vuex === true && !isEmptyObj(ops.modules)) {
-				for(let key in ops.modules) {
-					let module = ops.modules[key];
-					this.$store.unregisterModule(key);
-				}
-			}
+			// if(ops.unmodules === true && ops.vuex === true && !isEmptyObj(ops.modules)) {
+			// 	for(let key in ops.modules) {
+			// 		let module = ops.modules[key];
+			// 		this.$store.unregisterModule(key);
+			// 	}
+			// }
 
 			ops.destroyed.bind(this)()
 		}
@@ -104,47 +104,47 @@ class Vuec {
 		}
 
 
-		function setVuexComputeProperties() {
-			let mapStateObj = {}
-			let mapGettersObj = {}
-			if(ops.states.length > 0) mapStateObj = mapState(ops.namespace,ops.states)
-			if(ops.getters.length > 0) mapGettersObj = mapGetters(ops.namespace,ops.getters)
-			return {...mapStateObj,...mapGettersObj};
-		}
+		// function setVuexComputeProperties() {
+		// 	let mapStateObj = {}
+		// 	let mapGettersObj = {}
+		// 	if(ops.states.length > 0) mapStateObj = mapState(ops.namespace,ops.states)
+		// 	if(ops.getters.length > 0) mapGettersObj = mapGetters(ops.namespace,ops.getters)
+		// 	return {...mapStateObj,...mapGettersObj};
+		// }
 
-		function setVuexMethodProperties() {
-			let mapMutationsObj = {}
-			let mapActionsObj = {}
-			if(ops.mutations.length > 0) mapMutationsObj = mapMutations(ops.namespace,ops.mutations)
-			if(ops.actions.length > 0) mapActionsObj = mapActions(ops.namespace,ops.actions)
-			return {...mapMutationsObj,...mapActionsObj} 
-		}
+		// function setVuexMethodProperties() {
+		// 	let mapMutationsObj = {}
+		// 	let mapActionsObj = {}
+		// 	if(ops.mutations.length > 0) mapMutationsObj = mapMutations(ops.namespace,ops.mutations)
+		// 	if(ops.actions.length > 0) mapActionsObj = mapActions(ops.namespace,ops.actions)
+		// 	return {...mapMutationsObj,...mapActionsObj} 
+		// }
 
 
-		if(ops.vuex === true && !isEmptyObj(ops.modules)) {
-			for(let key in ops.modules) {
-				let module = ops.modules[key];
-				store.registerModule(key,module);
-			}
-		}
+		// if(ops.vuex === true && !isEmptyObj(ops.modules)) {
+		// 	for(let key in ops.modules) {
+		// 		let module = ops.modules[key];
+		// 		store.registerModule(key,module);
+		// 	}
+		// }
 
-		let computeProperties = {}
-		let methodPropertyies = {}
+		// let computeProperties = {}
+		// let methodPropertyies = {}
 
-		if( ops.vuex === true ) {
-			computeProperties = {
-				...setVuexComputeProperties(),
-				...ops.computed
-			}
+		// if( ops.vuex === true ) {
+		// 	computeProperties = {
+		// 		...setVuexComputeProperties(),
+		// 		...ops.computed
+		// 	}
 
-			methodPropertyies = {
-				...setVuexMethodProperties(),
-				...ops.methods
-			}
-		} else {
-			computeProperties = ops.computed
-			methodPropertyies = ops.methods
-		}
+		// 	methodPropertyies = {
+		// 		...setVuexMethodProperties(),
+		// 		...ops.methods
+		// 	}
+		// } else {
+		// 	computeProperties = ops.computed
+		// 	methodPropertyies = ops.methods
+		// }
 
 
 		let obj = {
@@ -159,8 +159,8 @@ class Vuec {
 			activated:activatedLifecycle,
 			deactivated:deactivatedLifecycle,
 			destroyed:destroyedLifecycle,
-			computed:computeProperties,
-			methods:methodPropertyies,
+			computed:ops.computed,
+			methods:ops.methods,
 			components:ops.components,
 			watch:ops.watch,
 			filters:ops.filters,

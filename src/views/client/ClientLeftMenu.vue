@@ -25,20 +25,53 @@
 </template>
 <script>
 	import {vuec} from "vuec";
-	import ClientLeftMenuModule from "@/vuex/modules/client/ClientLeftMenu"
 	export default vuec({
 		name:"ClientLeftMenu",
-		namespace:"Client/ClientLeftMenu",
-		vuex:true,
-		modules:{
-			"Client/ClientLeftMenu":ClientLeftMenuModule
+		data:{
+			datas:{
+				menuList:{
+					'日报':[
+						{name:"DailyReportCurrentStockUpload",label:"日报现货表上传",icon:"social-buffer"},
+						{name:"DailyReportCurrentStockSearch",label:"日报现货表查询",icon:"social-buffer"},
+					],
+
+					'毒App':[
+						{name:"DuAppSkuSave",label:"货号存储",icon:"social-buffer"},
+						{name:"DuAppSkuDetailExport",label:"导出数据",icon:"social-buffer"},
+						
+					],
+				},
+			},
+			values:{
+				initComponent:"DailyReportCurrentStockUpload",
+				selectComponent:"DailyReportCurrentStockUpload"
+			}
 		},
-		states:['datas','values','status'],
-		actions:['initRouterPage','spikRouterPage'],
 
 		created() {
 			this.initRouterPage()
 		},
+
+		methods:{
+			initRouterPage() {
+				if( window.location.pathname === '/' ) {
+					this.$router.push({name:this.values.initComponent});
+				} else {
+					var name = this.$route.name
+					this.spikRouterPage(name)
+				}
+			},
+
+			spikRouterPage(component) {
+				this.$router.push({name:component});
+				this.changeSelectComponentState(component)
+			},
+
+			changeSelectComponentState(name) {
+				this.values.selectComponent = name;
+			}
+
+		}
 
 	})
 
