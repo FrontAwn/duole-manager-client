@@ -6,7 +6,7 @@
 			<Card class="admin-iview-core-card">
 				<div slot="title">
 					<Icon type="ios-circle-filled"></Icon>
-					导出所有数据
+					导出当天货号详情数据
 				</div>
 				<div class="admin-component-flex-box">
 					<div class="admin-component-outer-content-left-box">
@@ -16,9 +16,9 @@
 						        当前日期:{{timer}}
 						        <template slot="desc">
 						        	当前数据库需要抓取 
-						        	<span style="color: #20282B;font-weight: bold">{{skusCount}}</span>
+						        	<span style="color: #20282B;font-weight: bold">{{needDumpProductCount}}</span>
 						        	 货号，今天已经抓取了 
-						        	 <span style="color: #F46565;font-weight: bold">{{detailCount}}</span>
+						        	 <span style="color: #F46565;font-weight: bold">{{alreadyDumpProductCount}}</span>
 						        	  条.
 						        </template>
 						    </Alert>
@@ -38,7 +38,7 @@
 			<Card class="admin-iview-core-card">
 				<div slot="title">
 					<Icon type="ios-circle-filled"></Icon>
-					导出历史数据
+					导出历史货号详情数据
 				</div>
 				<div class="admin-component-flex-box">
 					<div class="admin-component-outer-content-left-box">
@@ -91,8 +91,8 @@
 			loading:false,
 			timer: moment().format('YYYY-MM-DD'),
 			hasDetailDates:null,
-			detailCount:0,
-			skusCount:0,
+			alreadyDumpProductCount:0,
+			needDumpProductCount:0,
 
 			selectDate:null,
 
@@ -112,49 +112,23 @@
 		methods:{
 
 			async getDatas() {
-				let resCountByCurrentDetail = await Http.requestAsync({
-					url:'/api/count',
+				this.alreadyDumpProductCount = await Http.requestAsync({
+					url:'/duApp/getAlreadyDumpProductConut',
 					data:{
-						table:'DuSkuDetail',
-						attr:'id',
-						where:{
-							'update_time':this.timer
-						}
+						createAt:this.timer
 					}
 				})
 
-				let resCountByNeedDumpSkus = await Http.requestAsync({
-					url:'/api/count',
-					data:{
-						table:'DuSkus',
-						attr:'id',
-						where:{
-							'state':{
-								'$in':[1,2]
-							}
-						}
-					}
+				this.needDumpProductCount = await Http.requestAsync({
+					url:"/duApp/getNeedDumpProductCount"
 				})
 
-				let resUpdateTimeSkuDetails = await Http.requestAsync({
-					url:'/api/finds',
-					data:{
-						table:'DuSkuDetail',
-						attrs:['update_time'],
-						where:{
-							'id':{
-								'$gt':0
-							}
-						},
-						group:'update_time'
-					}
+				let allDumpDateListRes = await Http.requestAsync({
+					url:'/duApp/getAllDumpCreateDateList',
 				})
 
-				this.detailCount = resCountByCurrentDetail['data']
-				this.skusCount = resCountByNeedDumpSkus['data']
-
-				resUpdateTimeSkuDetails['data'].forEach((data,idx)=>{
-					updateDates.push(data['update_time'])
+				allDumpDateListRes.forEach((data,idx)=>{
+					updateDates.push(data['create_at'])
 				})
 
 				this.hasDetailDates = updateDates
@@ -166,11 +140,11 @@
 			},
 
 			async exportCurrentDayAllDetails() {
-				if ( this.detailCount == 0 ) {
+				if ( this.alreadyDumpProductCount == 0 ) {
 					this.$Notice.warning({title:'今天还没有抓取任何数据，请先抓取数据再导出'})
 					return;
 				}
-				let targetServer = `${Http.getBaseURL()}/duApp/exportCurrentDayDetails`;
+				let targetServer = `${Http.getBaseURL()}/duApp/exportDetails`;
 				window.location.href = targetServer
 			},
 
@@ -179,7 +153,7 @@
 					this.$Notice.warning({title:'请先选择要导出数据的日期'})
 					return;
 				}
-				let targetServer = `${Http.getBaseURL()}/duApp/exportHistoryDetails?date=${this.selectDate}`;
+				let targetServer = `${Http.getBaseURL()}/duApp/exportDetails?date=${this.selectDate}`;
 				window.location.href = targetServer
 			}
 
