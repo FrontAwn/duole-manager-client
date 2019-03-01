@@ -131,7 +131,10 @@ const dailyReportCurrentStockComputed = (datas)=>{
 		).toFixed(2)
 
 
-		res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
+		// res[buildIdx]['周成本'] = costJiaquanAve.toFixed(2)
+		res[buildIdx]['周成本'] = (
+			NP.divide(costJiaquanAve,brandPrice)*10
+		).toFixed(2)
 		// break;
 	}
 
