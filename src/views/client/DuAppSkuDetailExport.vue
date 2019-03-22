@@ -29,7 +29,7 @@
 						        	 <template slot="desc">
 						        	 	<p><span style="font-weight: bold">Warning:</span> 一般毒的数据数量不低于9000条，如果当前显示已经抓取数量低于这个数量的时候不建议导出，以免导出数据不完整</p>
 						        	 	<div style="height: 10px;"></div>
-						        	 	<p><span style="font-weight: bold">Warning:</span> 如果导出的数据，在前一天销量和尺码销量的列大量出现0的时候，说明前一天的销量数据还没有同步</p>
+						        	 	<p><span style="font-weight: bold">Warning:</span> 如果导出的数据，在前一天销量和尺码销量的列大量出现'--'的时候，说明前一天的销量数据还没有同步，稍后再重新导出</p>
 						        	 </template>
 						    </Alert>
 						</div>
