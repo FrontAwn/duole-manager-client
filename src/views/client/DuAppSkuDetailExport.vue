@@ -6,71 +6,48 @@
 			<Card class="admin-iview-core-card">
 				<div slot="title">
 					<Icon type="ios-circle-filled"></Icon>
-					导出当天货号详情数据
+					当前日期已经抓取了 <span style="color: #F46565;font-weight: bold">{{productCount}}</span> 条
 				</div>
 				<div class="admin-component-flex-box">
 					<div class="admin-component-outer-content-left-box">
 						
 						<div style="width: 90%">
-							<Alert type="success">
-						        当前日期:{{timer}}
-						        <template slot="desc">
-						        	当前数据库需要抓取 
-						        	<span style="color: #20282B;font-weight: bold">{{needDumpProductCount}}</span>
-						        	 货号，今天已经抓取了 
-						        	 <span style="color: #F46565;font-weight: bold">{{alreadyDumpProductCount}}</span>
-						        	  条.
-						        </template>
-						    </Alert>
-						</div>
+						    
 
-					</div>
-					<div class="admin-component-outer-content-right-box">
-						<Button type="error" icon="archive" @click="exportCurrentDayAllDetails">导出数据</Button>
-					</div>	
-				</div>
-				
-			</Card>
-	 	</div>
-
-
-	 	<div class="admin-component-inner-box">
-			<Card class="admin-iview-core-card">
-				<div slot="title">
-					<Icon type="ios-circle-filled"></Icon>
-					导出历史货号详情数据
-				</div>
-				<div class="admin-component-flex-box">
-					<div class="admin-component-outer-content-left-box">
-						
-						<div style="width: 90%">
 							<DatePicker 
-						    	v-if="hasDetailDates!==null"
-						    	type="date" 
+								v-if="hasDataDates !== null"
 						    	:options="dateOptions" 
+						    	type="date" 
 						    	placeholder="选择日期" 
 						    	style="width: 100%;margin-bottom: 10px;"
-						    	@on-change="selectHasDetailDate"
+						    	:value="currentDate"
+						    	@on-change="changeDate"
 						    ></DatePicker>
 
 							<Alert type="warning">
-						        根据日期导出数据
-						        <template slot="desc">
-						        	注意: 选择日期时只有数据库存有对应日期的数据时才能选中
-						        </template>
+						        	
+						        	 <template slot="desc">
+						        	 	<p><span style="font-weight: bold">Warning:</span> 一般毒的数据数量不低于9000条，如果当前显示已经抓取数量低于这个数量的时候不建议导出，以免导出数据不完整</p>
+						        	 	<div style="height: 10px;"></div>
+						        	 	<p><span style="font-weight: bold">Warning:</span> 如果导出的数据，在前一天销量和尺码销量的列大量出现0的时候，说明前一天的销量数据还没有同步</p>
+						        	 </template>
 						    </Alert>
-
 						</div>
 
 					</div>
 					<div class="admin-component-outer-content-right-box">
-						<Button type="error" icon="archive" @click="exportDetailsByUpdate">导出数据</Button>
+						<Button 
+							type="primary" 
+							icon="archive" 
+							@click="exportDatas"
+							:disabled="isDisabled"
+							:loading="loading"
+						>导出数据</Button>
 					</div>	
 				</div>
 				
 			</Card>
 	 	</div>
-
 
         <div style="height:200px;"></div>
 
@@ -83,23 +60,23 @@
 	import Http from "@/utils/Http"
 	import Event from "@/utils/Emitter"
 	const moment = require('moment')
-	let updateDates = []
+
+	let dates = []
 
 	export default vuec({
 		name:'DuAppSkuDetailExport',
 		data:{
 			loading:false,
-			timer: moment().format('YYYY-MM-DD'),
-			hasDetailDates:null,
-			alreadyDumpProductCount:0,
-			needDumpProductCount:0,
+			currentDate: moment().format('YYYY-MM-DD'),
+			hasDataDates:null,
+			productCount:0,
 
 			selectDate:null,
 
 			dateOptions:{
 				disabledDate(dateParam){
 					let date = moment(dateParam).format('YYYY-MM-DD')
-					return !updateDates.includes(date)
+					return !dates.includes(date)
 				}
 			},
 		},
@@ -109,53 +86,75 @@
 			await this.getDatas()
 		},
 
+		computed:{
+			isDisabled() {
+				return this.productCount > 0 ? false : true
+			}
+		},
+
 		methods:{
 
 			async getDatas() {
-				this.alreadyDumpProductCount = await Http.requestAsync({
-					url:'/duApp/getAlreadyDumpProductConut',
+				this.checkDatas()
+				let hasDataDates = await Http.requestAsync({
+					url:"/du/getSellProductDetail",
 					data:{
-						createAt:this.timer
+						conditions:JSON.stringify({
+							raw:true,
+							attributes:["create_at"],
+							order:[["create_at","DESC"]],
+							group:"create_at",
+							limit:30
+						})
 					}
 				})
 
-				this.needDumpProductCount = await Http.requestAsync({
-					url:"/duApp/getNeedDumpProductCount"
-				})
-
-				let allDumpDateListRes = await Http.requestAsync({
-					url:'/duApp/getAllDumpCreateDateList',
-				})
-
-				allDumpDateListRes.forEach((data,idx)=>{
-					updateDates.push(data['create_at'])
-				})
-
-				this.hasDetailDates = updateDates
-			},
-
-
-			selectHasDetailDate(date) {
-				this.selectDate = date;
-			},
-
-			async exportCurrentDayAllDetails() {
-				if ( this.alreadyDumpProductCount == 0 ) {
-					this.$Notice.warning({title:'今天还没有抓取任何数据，请先抓取数据再导出'})
-					return;
+				for ( let [idx,content] of hasDataDates.entries() ) {
+					dates.push(content["create_at"])
 				}
-				let targetServer = `${Http.getBaseURL()}/duApp/exportDetails`;
-				window.location.href = targetServer
+
+				this.hasDataDates = hasDataDates
+
 			},
 
-			async exportDetailsByUpdate() {
-				if ( this.selectDate === null ) {
-					this.$Notice.warning({title:'请先选择要导出数据的日期'})
-					return;
+			changeDate(date) {
+				this.currentDate = date;
+				this.productCount = 0
+				this.checkDatas()
+			},
+
+			async checkDatas() {
+				let createAt = this.currentDate
+				let res = await Http.requestAsync({
+					url:"/du/getSellProductDetail",
+					data:{
+						conditions:{
+							raw:true,
+							attributes:["sku"],
+							where:{
+								create_at:createAt
+							}
+						}
+					}
+				})
+				this.productCount = res.length
+			},
+
+			async exportDatas() {
+				let createAt = this.currentDate
+				this.loading = true
+				let state = await Http.requestAsync({
+					url:"/du/generateDataExcel",
+					data:{
+						createAt
+					}
+				})
+				if ( state ) {
+					this.loading = false
+					let downloadApi = `${Http.getBaseURL()}/du/downloadDataExcel?createAt=${createAt}`;	
+					window.location.href = downloadApi
 				}
-				let targetServer = `${Http.getBaseURL()}/duApp/exportDetails?date=${this.selectDate}`;
-				window.location.href = targetServer
-			}
+			},
 
 		},
 

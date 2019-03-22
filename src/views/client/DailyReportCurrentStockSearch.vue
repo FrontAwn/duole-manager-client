@@ -187,7 +187,6 @@
 		},
 
 		mounted(){
-			// this.sku = '908978-001'
 		},
 
 		methods:{

@@ -13,7 +13,7 @@ const DailyReportCurrentStockListBySearch = ()=>import('@/views/dailyReport/Dail
 const DailyReportCurrentStockSearch = ()=>import('@/views/client/DailyReportCurrentStockSearch')
 
 // duapp
-const DuAppSkuSave = ()=>import('@/views/client/DuAppSkuSave');
+
 const DuAppSkuDetailExport = ()=>import('@/views/client/DuAppSkuDetailExport')
 
 // www.nike.net
@@ -36,13 +36,6 @@ const routes = [
 	    		path:'dailyReport/currentStockSearch',
 	    		name:'DailyReportCurrentStockSearch',
 	    		component:DailyReportCurrentStockSearch,
-	    	},
-
-
-	    	{
-	    		path:'duapp/skuSave',
-	    		name:'DuAppSkuSave',
-	    		component:DuAppSkuSave,
 	    	},
 
 	    	{
